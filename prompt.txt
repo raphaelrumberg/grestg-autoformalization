@@ -1,0 +1,90 @@
+# Autoformalization Prompt - § 1 Abs 3 GrEStG 1987
+
+## Role
+You are a legal formalization expert specializing in Austrian tax law. Your task is to translate the provided statutory text into a single executable Python function that correctly implements the legal logic of § 1 Abs 3 of the Grunderwerbsteuergesetz (GrEStG) 1987.
+
+## Task
+Implement exactly this function signature:
+
+from typing import Optional, Tuple
+def check_anteilsvereinigung(graph: dict, target_entity: str) -> Tuple[bool, Optional[str]]:
+
+The function receives an ownership graph and the ID of the property-owning entity (PropCo) under examination. It returns:
+- (True, <acquirer_id>) if Grunderwerbsteuer is triggered, where <acquirer_id> is the entity ID of the acquirer who owes the tax
+- (False, None) if no tax is triggered
+
+Return ONLY a single ```python code block containing this function. No explanation, no additional functions, no imports outside the function body. Start the code block with 'from typing import Optional, Tuple'.
+
+## Input: JSON graph schema
+The graph dict has exactly two keys:
+
+"nodes": list of node objects, each with:
+  - "id":   string  - unique identifier for this entity
+  - "name": string  - human-readable name
+  - "type": string  - one of: "acquirer", "holding", "propco"
+
+"edges": list of edge objects, each with:
+  - "from":       string - id of the parent entity (the one holding shares)
+  - "to":         string - id of the child entity (the one whose shares are held)
+  - "percentage": float  - ownership percentage (0.0 to 100.0)
+
+Edges are directed: {"from": "A", "to": "P", "percentage": 80.0} means A holds 80% of P.
+
+## Legal logic
+
+### Z 1 - Change in shareholder structure
+Tax is triggered when, within seven years, at least 75% of the shares in a property-owning entity pass directly to new shareholders. For each acquirer-type node individually, sum all direct edges from that acquirer to target_entity. If any single acquirer's direct total is >= 75.0, Z 1 is triggered and that acquirer is the taxpayer.
+
+### Z 2 - Share consolidation (applies only if Z 1 does not)
+Tax is triggered when at least 75% of shares in the property-owning entity are consolidated in the hand of a single acquirer.
+
+For each acquirer, compute their total effective stake in target_entity by summing the values of all distinct paths from that acquirer to target_entity. Each path's value is the product of the ownership percentages along its edges. A direct edge counts as a one-hop path.
+
+For example, if A holds 80% of B, and B holds 90% of PropCo, then A's stake via that path is 80% × 90% = 72%. If A also holds 60% of C, and C holds 20% of PropCo, A's stake via that second path is 60% × 20% = 12%. A's total effective stake is 72% + 12% = 84%.
+
+Tax is triggered if any single acquirer's total effective stake >= 75.0. That acquirer is the taxpayer.
+
+### Priority rule
+Z 1 is evaluated first. Z 2 is only evaluated if Z 1 is not triggered.
+
+## Examples
+
+### Example 1 - Z 1 triggered (direct, at threshold)
+Input:
+{
+  "graph": {
+    "nodes": [
+      {"id": "A", "name": "Acquirer GmbH", "type": "acquirer"},
+      {"id": "P", "name": "PropCo GmbH",   "type": "propco"}
+    ],
+    "edges": [
+      {"from": "A", "to": "P", "percentage": 75.0}
+    ]
+  },
+  "target_entity": "P"
+}
+
+Expected output: (True, "A")
+Reasoning: A directly transfers 75% of P to itself as a new shareholder. The threshold of 75% is met exactly. Z 1 applies. A owes the tax.
+
+### Example 2 - Z 2 not triggered (indirect chain below threshold)
+Input:
+{
+  "graph": {
+    "nodes": [
+      {"id": "A", "name": "Acquirer GmbH", "type": "acquirer"},
+      {"id": "H", "name": "Holding GmbH",  "type": "holding"},
+      {"id": "P", "name": "PropCo GmbH",   "type": "propco"}
+    ],
+    "edges": [
+      {"from": "A", "to": "H", "percentage": 80.0},
+      {"from": "H", "to": "P", "percentage": 80.0}
+    ]
+  },
+  "target_entity": "P"
+}
+
+Expected output: (False, None)
+Reasoning: A holds P only indirectly through H. A's effective stake in P is 80% × 80% = 64%. Z 1 does not apply (no direct transfer to new shareholders). Z 2 does not apply (64% < 75%). No tax is triggered.
+
+## Statutory text

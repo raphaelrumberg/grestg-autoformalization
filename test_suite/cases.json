@@ -1,0 +1,285 @@
+[
+  {
+    "id": "tc_001",
+    "description": "Direct acquisition of 80%. Above threshold, should trigger (Z 1)",
+    "expected_triggered": true,
+    "expected_taxpayer": "A",
+    "target_entity": "PropCo",
+    "graph": {
+      "nodes": [
+        {"id": "A", "name": "Acquirer GmbH", "type": "acquirer"},
+        {"id": "PropCo", "name": "PropCo GmbH", "type": "propco"}
+      ],
+      "edges": [
+        {"from": "A", "to": "PropCo", "percentage": 80.0}
+      ]
+    }
+  },
+  {
+    "id": "tc_002",
+    "description": "Direct acquisition of 60%. Below threshold, should not trigger",
+    "expected_triggered": false,
+    "expected_taxpayer": null,
+    "target_entity": "PropCo",
+    "graph": {
+      "nodes": [
+        {"id": "A", "name": "Acquirer GmbH", "type": "acquirer"},
+        {"id": "PropCo", "name": "PropCo GmbH", "type": "propco"}
+      ],
+      "edges": [
+        {"from": "A", "to": "PropCo", "percentage": 60.0}
+      ]
+    }
+  },
+  {
+    "id": "tc_003",
+    "description": "Direct acquisition of exactly 75%, at threshold, should trigger (Z 1)",
+    "expected_triggered": true,
+    "expected_taxpayer": "A",
+    "target_entity": "PropCo",
+    "graph": {
+      "nodes": [
+        {"id": "A", "name": "Acquirer GmbH", "type": "acquirer"},
+        {"id": "PropCo", "name": "PropCo GmbH", "type": "propco"}
+      ],
+      "edges": [
+        {"from": "A", "to": "PropCo", "percentage": 75.0}
+      ]
+    }
+  },
+  {
+    "id": "tc_004",
+    "description": "Two-hop indirect chain, effective stake exactly 75% (100% x 75%), Z 2 triggered",
+    "expected_triggered": true,
+    "expected_taxpayer": "A",
+    "target_entity": "PropCo",
+    "graph": {
+      "nodes": [
+        {"id": "A", "name": "Acquirer GmbH", "type": "acquirer"},
+        {"id": "H", "name": "Holding GmbH", "type": "holding"},
+        {"id": "PropCo", "name": "PropCo GmbH", "type": "propco"}
+      ],
+      "edges": [
+        {"from": "A", "to": "H", "percentage": 100.0},
+        {"from": "H", "to": "PropCo", "percentage": 75.0}
+      ]
+    }
+  },
+  {
+    "id": "tc_005",
+    "description": "Single acquirer holds two intermediate holdings each 100%, which together hold 75% of PropCo (50% + 25%), Z 2 triggered via summed indirect paths",
+    "expected_triggered": true,
+    "expected_taxpayer": "A",
+    "target_entity": "PropCo",
+    "graph": {
+      "nodes": [
+        {"id": "A", "name": "Acquirer GmbH", "type": "acquirer"},
+        {"id": "H1", "name": "Holding 1 GmbH", "type": "holding"},
+        {"id": "H2", "name": "Holding 2 GmbH", "type": "holding"},
+        {"id": "PropCo", "name": "PropCo GmbH", "type": "propco"}
+      ],
+      "edges": [
+        {"from": "A", "to": "H1", "percentage": 100.0},
+        {"from": "A", "to": "H2", "percentage": 100.0},
+        {"from": "H1", "to": "PropCo", "percentage": 50.0},
+        {"from": "H2", "to": "PropCo", "percentage": 25.0}
+      ]
+    }
+  },
+  {
+    "id": "tc_006",
+    "description": "Direct acquisition of 74.99%, just below threshold, should not trigger",
+    "expected_triggered": false,
+    "expected_taxpayer": null,
+    "target_entity": "PropCo",
+    "graph": {
+      "nodes": [
+        {"id": "A", "name": "Acquirer GmbH", "type": "acquirer"},
+        {"id": "PropCo", "name": "PropCo GmbH", "type": "propco"}
+      ],
+      "edges": [
+        {"from": "A", "to": "PropCo", "percentage": 74.99}
+      ]
+    }
+  },
+  {
+    "id": "tc_007",
+    "description": "Three-hop chain 90% x 90% x 90% = 72.9%, below threshold, should not trigger",
+    "expected_triggered": false,
+    "expected_taxpayer": null,
+    "target_entity": "PropCo",
+    "graph": {
+      "nodes": [
+        {"id": "A", "name": "Acquirer GmbH", "type": "acquirer"},
+        {"id": "H1", "name": "Holding 1 GmbH", "type": "holding"},
+        {"id": "H2", "name": "Holding 2 GmbH", "type": "holding"},
+        {"id": "PropCo", "name": "PropCo GmbH", "type": "propco"}
+      ],
+      "edges": [
+        {"from": "A", "to": "H1", "percentage": 90.0},
+        {"from": "H1", "to": "H2", "percentage": 90.0},
+        {"from": "H2", "to": "PropCo", "percentage": 90.0}
+      ]
+    }
+  },
+  {
+    "id": "tc_008",
+    "description": "Three-hop chain 100% x 100% x 80% = 80%, above threshold, Z 2 triggered",
+    "expected_triggered": true,
+    "expected_taxpayer": "A",
+    "target_entity": "PropCo",
+    "graph": {
+      "nodes": [
+        {"id": "A", "name": "Acquirer GmbH", "type": "acquirer"},
+        {"id": "H1", "name": "Holding 1 GmbH", "type": "holding"},
+        {"id": "H2", "name": "Holding 2 GmbH", "type": "holding"},
+        {"id": "PropCo", "name": "PropCo GmbH", "type": "propco"}
+      ],
+      "edges": [
+        {"from": "A", "to": "H1", "percentage": 100.0},
+        {"from": "H1", "to": "H2", "percentage": 100.0},
+        {"from": "H2", "to": "PropCo", "percentage": 80.0}
+      ]
+    }
+  },
+  {
+    "id": "tc_009",
+    "description": "Two acquirers each hold 40% directly, neither alone reaches 75%, Z 1 not triggered (no single acquirer), Z 2 not triggered",
+    "expected_triggered": false,
+    "expected_taxpayer": null,
+    "target_entity": "PropCo",
+    "graph": {
+      "nodes": [
+        {"id": "A1", "name": "Acquirer 1 GmbH", "type": "acquirer"},
+        {"id": "A2", "name": "Acquirer 2 GmbH", "type": "acquirer"},
+        {"id": "PropCo", "name": "PropCo GmbH", "type": "propco"}
+      ],
+      "edges": [
+        {"from": "A1", "to": "PropCo", "percentage": 40.0},
+        {"from": "A2", "to": "PropCo", "percentage": 40.0}
+      ]
+    }
+  },
+  {
+    "id": "tc_010",
+    "description": "Two acquirers, A1 holds 80% directly, Z 1 triggered by A1 alone",
+    "expected_triggered": true,
+    "expected_taxpayer": "A1",
+    "target_entity": "PropCo",
+    "graph": {
+      "nodes": [
+        {"id": "A1", "name": "Acquirer 1 GmbH", "type": "acquirer"},
+        {"id": "A2", "name": "Acquirer 2 GmbH", "type": "acquirer"},
+        {"id": "PropCo", "name": "PropCo GmbH", "type": "propco"}
+      ],
+      "edges": [
+        {"from": "A1", "to": "PropCo", "percentage": 80.0},
+        {"from": "A2", "to": "PropCo", "percentage": 10.0}
+      ]
+    }
+  },
+  {
+    "id": "tc_011",
+    "description": "Acquirer holds 74% directly and 10% indirectly via holding (100% x 10%), total effective 84%, Z 2 triggered",
+    "expected_triggered": true,
+    "expected_taxpayer": "A",
+    "target_entity": "PropCo",
+    "graph": {
+      "nodes": [
+        {"id": "A", "name": "Acquirer GmbH", "type": "acquirer"},
+        {"id": "H", "name": "Holding GmbH", "type": "holding"},
+        {"id": "PropCo", "name": "PropCo GmbH", "type": "propco"}
+      ],
+      "edges": [
+        {"from": "A", "to": "PropCo", "percentage": 74.0},
+        {"from": "A", "to": "H", "percentage": 100.0},
+        {"from": "H", "to": "PropCo", "percentage": 10.0}
+      ]
+    }
+  },
+  {
+    "id": "tc_012",
+    "description": "Three-level chain with two parallel holdings on middle level: A→H1 (60%)→PropCo (80%) and A→H2 (50%)→PropCo (30%). Effective: 48% + 15% = 63%, below threshold, Z 2 not triggered",
+    "expected_triggered": false,
+    "expected_taxpayer": null,
+    "target_entity": "PropCo",
+    "graph": {
+      "nodes": [
+        {"id": "A", "name": "Acquirer GmbH", "type": "acquirer"},
+        {"id": "H1", "name": "Holding 1 GmbH", "type": "holding"},
+        {"id": "H2", "name": "Holding 2 GmbH", "type": "holding"},
+        {"id": "PropCo", "name": "PropCo GmbH", "type": "propco"}
+      ],
+      "edges": [
+        {"from": "A", "to": "H1", "percentage": 60.0},
+        {"from": "A", "to": "H2", "percentage": 50.0},
+        {"from": "H1", "to": "PropCo", "percentage": 80.0},
+        {"from": "H2", "to": "PropCo", "percentage": 30.0}
+      ]
+    }
+  },
+  {
+    "id": "tc_013",
+    "description": "Three-level chain with two parallel holdings on middle level: A→H1 (100%)→PropCo (50%) and A→H2 (100%)→PropCo (30%). Effective: 50% + 30% = 80%, above threshold, Z 2 triggered",
+    "expected_triggered": true,
+    "expected_taxpayer": "A",
+    "target_entity": "PropCo",
+    "graph": {
+      "nodes": [
+        {"id": "A", "name": "Acquirer GmbH", "type": "acquirer"},
+        {"id": "H1", "name": "Holding 1 GmbH", "type": "holding"},
+        {"id": "H2", "name": "Holding 2 GmbH", "type": "holding"},
+        {"id": "PropCo", "name": "PropCo GmbH", "type": "propco"}
+      ],
+      "edges": [
+        {"from": "A", "to": "H1", "percentage": 100.0},
+        {"from": "A", "to": "H2", "percentage": 100.0},
+        {"from": "H1", "to": "PropCo", "percentage": 50.0},
+        {"from": "H2", "to": "PropCo", "percentage": 30.0}
+      ]
+    }
+  },
+  {
+    "id": "tc_014",
+    "description": "Four-hop deep chain 100% x 100% x 100% x 80% = 80%, deep nesting, Z 2 triggered",
+    "expected_triggered": true,
+    "expected_taxpayer": "A",
+    "target_entity": "PropCo",
+    "graph": {
+      "nodes": [
+        {"id": "A", "name": "Acquirer GmbH", "type": "acquirer"},
+        {"id": "H1", "name": "Holding 1 GmbH", "type": "holding"},
+        {"id": "H2", "name": "Holding 2 GmbH", "type": "holding"},
+        {"id": "H3", "name": "Holding 3 GmbH", "type": "holding"},
+        {"id": "PropCo", "name": "PropCo GmbH", "type": "propco"}
+      ],
+      "edges": [
+        {"from": "A", "to": "H1", "percentage": 100.0},
+        {"from": "H1", "to": "H2", "percentage": 100.0},
+        {"from": "H2", "to": "H3", "percentage": 100.0},
+        {"from": "H3", "to": "PropCo", "percentage": 80.0}
+      ]
+    }
+  },
+  {
+    "id": "tc_015",
+    "description": "Two acquirers, A1 holds 40% directly and 40% indirectly via holding (total 80%), A2 holds 10%, Z 1 not triggered (A1 direct only 40%), Z 2 triggered by A1 via indirect path",
+    "expected_triggered": true,
+    "expected_taxpayer": "A1",
+    "target_entity": "PropCo",
+    "graph": {
+      "nodes": [
+        {"id": "A1", "name": "Acquirer 1 GmbH", "type": "acquirer"},
+        {"id": "A2", "name": "Acquirer 2 GmbH", "type": "acquirer"},
+        {"id": "H", "name": "Holding GmbH", "type": "holding"},
+        {"id": "PropCo", "name": "PropCo GmbH", "type": "propco"}
+      ],
+      "edges": [
+        {"from": "A1", "to": "PropCo", "percentage": 40.0},
+        {"from": "A1", "to": "H", "percentage": 100.0},
+        {"from": "H", "to": "PropCo", "percentage": 40.0},
+        {"from": "A2", "to": "PropCo", "percentage": 10.0}
+      ]
+    }
+  }
+]

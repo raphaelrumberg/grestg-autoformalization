@@ -1,0 +1,8 @@
+MODEL_NAME = "claude-sonnet-4-5"
+GEMINI_MODEL_NAME = "gemini-2.5-flash"
+OPENAI_MODEL_NAME = "gpt-4o"
+GENERATED_CODE_PATH = "generated/generated_code.py"
+TEST_SUITE_PATH = "test_suite/cases.json"
+PROMPT_PATH = "prompt.txt"
+STATUTORY_TEXT_PATH = "statutory_text/grestg_paragraph1_abs3.txt"
+RESULTS_DIR = "results/"

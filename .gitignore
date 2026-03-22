@@ -1,0 +1,19 @@
+# Python
+__pycache__/
+*.pyc
+*.pyo
+venv/
+
+# Environment
+.env
+
+# IDE
+.idea/
+
+# Generated outputs
+generated/generated_code.py
+results/
+
+# Keep directory structure
+!generated/.gitkeep
+!results/.gitkeep
