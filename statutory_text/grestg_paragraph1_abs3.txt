@@ -1,10 +1,41 @@
-(3) Der Grunderwerbsteuer unterliegen auch folgende Vorgänge, wenn zum Vermögen einer Personen- oder Kapitalgesellschaft ein inländisches Grundstück gehört:
-1. Eine Änderung des Gesellschafterbestandes dergestalt, dass innerhalb von sieben Jahren mindestens 75% der Anteile am Gesellschaftsvermögen oder der Gesellschaft unmittelbar auf neue Gesellschafter übergehen.
-2. Soweit eine Besteuerung nach Z 1 nicht in Betracht kommt, unterliegt der Grunderwerbsteuer außerdem,
-a) ein Rechtsgeschäft, das den Anspruch auf Übertragung
-aa) eines oder mehrerer Anteile am Gesellschaftsvermögen oder der Gesellschaft begründet, wenn durch die Übertragung unmittelbar oder mittelbar mindestens 75% aller Anteile am Gesellschaftsvermögen oder der Gesellschaft in der Hand eines Erwerbers vereinigt werden würden, oder
-bb) von mindestens 75% aller Anteile am Gesellschaftsvermögen oder der Gesellschaft auf einen Erwerber begründet;
-b) wenn kein schuldrechtliches Geschäft im Sinne der lit. a vorausgegangen ist
-aa) die Vereinigung unmittelbar oder mittelbar von mindestens 75% aller Anteile am Gesellschaftsvermögen oder der Gesellschaft in der Hand eines Erwerbers, oder
-bb) der unmittelbare oder mittelbare Erwerb von mindestens 75% aller Anteile am Gesellschaftsvermögen oder der Gesellschaft durch einen Erwerber.
-Für die Bestimmung der mittelbaren Beteiligung gemäß lit. a und b sind die prozentuellen Beteiligungen auf jeder Ebene miteinander zu multiplizieren. Erfüllt derselbe Vorgang die Voraussetzungen für einen unmittelbaren und mittelbaren Erwerbsvorgang, geht der unmittelbare Erwerbsvorgang vor. Erfüllt derselbe Vorgang die Voraussetzungen für mehrere mittelbare Erwerbsvorgänge, geht jener mittelbare Erwerbsvorgang vor, der der grundstücksbesitzenden Personen- oder Kapitalgesellschaft am nächsten liegt.
+(3) Der Grunderwerbsteuer unterliegen auch folgende Vorgänge, wenn zum Vermögen einer
+Personen- oder Kapitalgesellschaft ein inländisches Grundstück gehört:
+
+1. Eine Änderung des Gesellschafterbestandes dergestalt, dass innerhalb von sieben Jahren
+mindestens 75% der Anteile am Gesellschaftsvermögen oder der Gesellschaft unmittelbar
+auf neue Gesellschafter übergehen.
+
+2. Soweit eine Besteuerung nach Z 1 nicht in Betracht kommt, unterliegt der
+Grunderwerbsteuer außerdem,
+
+  a) ein Rechtsgeschäft, das den Anspruch auf Übertragung
+    aa) eines oder mehrerer Anteile am Gesellschaftsvermögen oder der Gesellschaft
+    begründet, wenn durch die Übertragung unmittelbar oder mittelbar mindestens 75%
+    aller Anteile am Gesellschaftsvermögen oder der Gesellschaft in der Hand eines
+    Erwerbers oder, sofern dies nicht gegeben ist, in der Hand einer Erwerbergruppe
+    vereinigt werden würden, oder
+
+    bb) von mindestens 75% aller Anteile am Gesellschaftsvermögen oder der Gesellschaft
+    auf einen Erwerber oder, sofern dies nicht gegeben ist, eine Erwerbergruppe begründet;
+
+  b) wenn kein schuldrechtliches Geschäft im Sinne der lit. a vorausgegangen ist
+    aa) die Vereinigung unmittelbar oder mittelbar von mindestens 75% aller Anteile am
+    Gesellschaftsvermögen oder der Gesellschaft in der Hand eines Erwerbers oder, sofern
+    dies nicht gegeben ist, in der Hand einer Erwerbergruppe, oder
+
+    bb) der unmittelbare oder mittelbare Erwerb von mindestens 75% aller Anteile am
+    Gesellschaftsvermögen oder der Gesellschaft durch einen Erwerber oder, sofern dies
+    nicht gegeben ist, eine Erwerbergruppe.
+
+Für die Bestimmung der mittelbaren Beteiligung gemäß lit. a und b sind die prozentuellen
+Beteiligungen auf jeder Ebene miteinander zu multiplizieren. Erfüllt derselbe Vorgang die
+Voraussetzungen für einen unmittelbaren und mittelbaren Erwerbsvorgang, geht der
+unmittelbare Erwerbsvorgang vor. Erfüllt derselbe Vorgang die Voraussetzungen für mehrere
+mittelbare Erwerbsvorgänge, geht jener mittelbare Erwerbsvorgang vor, der der
+grundstücksbesitzenden Personen- oder Kapitalgesellschaft am nächsten liegt.
+
+4. Eine Erwerbergruppe gemäß Z 2 liegt vor, wenn Erwerber zu wirtschaftlichen Zwecken
+unter einheitlicher Leitung zusammengefasst sind oder auf Grund von Beteiligungen oder
+sonst unmittelbar oder mittelbar unter dem beherrschenden Einfluss einer Person stehen.
+Zu einer Erwerbergruppe gehören auch Personen, die die einheitliche Leitung oder den
+beherrschenden Einfluss ausüben.

@@ -40,12 +40,13 @@ def cmd_test(_args):
     with open(config.TEST_SUITE_PATH, "r", encoding="utf-8") as f:
         all_cases = json.load(f)
 
-    case_graphs = {tc["id"]: tc["graph"] for tc in all_cases}
+    case_data = {tc["id"]: tc for tc in all_cases}
     for case in results["cases"]:
-        graph = case_graphs.get(case["id"])
-        if graph:
+        tc = case_data.get(case["id"])
+        if tc:
             output_path = os.path.join(config.RESULTS_DIR, f"graph_{case['id']}.png")
-            visualize_graph(graph, case["id"], output_path)
+            visualize_graph(tc["graph"], case["id"], output_path,
+                            tc.get("acquirer_groups", []))
 
 
 def cmd_benchmark(args):
@@ -62,7 +63,8 @@ def cmd_visualize(args):
     for tc in all_cases:
         if tc["id"] == args.case:
             output_path = os.path.join(config.RESULTS_DIR, f"graph_{tc['id']}.png")
-            visualize_graph(tc["graph"], tc["id"], output_path)
+            visualize_graph(tc["graph"], tc["id"], output_path,
+                            tc.get("acquirer_groups", []))
             return
 
     print(f"Error: case '{args.case}' not found in {config.TEST_SUITE_PATH}")

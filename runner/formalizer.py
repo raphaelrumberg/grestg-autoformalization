@@ -8,7 +8,7 @@ SYSTEM_PROMPT = (
     "Your entire response must be a single ```python code block. "
     "Start with 'from typing import Optional, Tuple' and then define exactly one "
     "function: def check_anteilsvereinigung(graph: dict, "
-    "target_entity: str) -> Tuple[bool, Optional[str]]"
+    "target_entity: str, acquirer_groups: list = None) -> Tuple[bool, Optional[str]]"
 )
 
 

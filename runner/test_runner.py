@@ -47,7 +47,11 @@ def run_tests() -> dict:
             "error": None,
         }
         try:
-            triggered, taxpayer = check_fn(case["graph"], case["target_entity"])
+            triggered, taxpayer = check_fn(
+                case["graph"],
+                case["target_entity"],
+                case.get("acquirer_groups", []),
+            )
             case_result["actual_triggered"] = triggered
             case_result["actual_taxpayer"] = taxpayer
             case_result["passed"] = (

@@ -5,6 +5,7 @@
     "expected_triggered": true,
     "expected_taxpayer": "A",
     "target_entity": "PropCo",
+    "acquirer_groups": [],
     "graph": {
       "nodes": [
         {"id": "A", "name": "Acquirer GmbH", "type": "acquirer"},
@@ -21,6 +22,7 @@
     "expected_triggered": false,
     "expected_taxpayer": null,
     "target_entity": "PropCo",
+    "acquirer_groups": [],
     "graph": {
       "nodes": [
         {"id": "A", "name": "Acquirer GmbH", "type": "acquirer"},
@@ -37,6 +39,7 @@
     "expected_triggered": true,
     "expected_taxpayer": "A",
     "target_entity": "PropCo",
+    "acquirer_groups": [],
     "graph": {
       "nodes": [
         {"id": "A", "name": "Acquirer GmbH", "type": "acquirer"},
@@ -53,6 +56,7 @@
     "expected_triggered": true,
     "expected_taxpayer": "A",
     "target_entity": "PropCo",
+    "acquirer_groups": [],
     "graph": {
       "nodes": [
         {"id": "A", "name": "Acquirer GmbH", "type": "acquirer"},
@@ -71,6 +75,7 @@
     "expected_triggered": true,
     "expected_taxpayer": "A",
     "target_entity": "PropCo",
+    "acquirer_groups": [],
     "graph": {
       "nodes": [
         {"id": "A", "name": "Acquirer GmbH", "type": "acquirer"},
@@ -92,6 +97,7 @@
     "expected_triggered": false,
     "expected_taxpayer": null,
     "target_entity": "PropCo",
+    "acquirer_groups": [],
     "graph": {
       "nodes": [
         {"id": "A", "name": "Acquirer GmbH", "type": "acquirer"},
@@ -108,6 +114,7 @@
     "expected_triggered": false,
     "expected_taxpayer": null,
     "target_entity": "PropCo",
+    "acquirer_groups": [],
     "graph": {
       "nodes": [
         {"id": "A", "name": "Acquirer GmbH", "type": "acquirer"},
@@ -128,6 +135,7 @@
     "expected_triggered": true,
     "expected_taxpayer": "A",
     "target_entity": "PropCo",
+    "acquirer_groups": [],
     "graph": {
       "nodes": [
         {"id": "A", "name": "Acquirer GmbH", "type": "acquirer"},
@@ -144,10 +152,11 @@
   },
   {
     "id": "tc_009",
-    "description": "Two acquirers each hold 40% directly, neither alone reaches 75%, Z 1 not triggered (no single acquirer), Z 2 not triggered",
+    "description": "Two acquirers each hold 40% directly, neither alone reaches 75%, no group defined, not triggered",
     "expected_triggered": false,
     "expected_taxpayer": null,
     "target_entity": "PropCo",
+    "acquirer_groups": [],
     "graph": {
       "nodes": [
         {"id": "A1", "name": "Acquirer 1 GmbH", "type": "acquirer"},
@@ -166,6 +175,7 @@
     "expected_triggered": true,
     "expected_taxpayer": "A1",
     "target_entity": "PropCo",
+    "acquirer_groups": [],
     "graph": {
       "nodes": [
         {"id": "A1", "name": "Acquirer 1 GmbH", "type": "acquirer"},
@@ -184,6 +194,7 @@
     "expected_triggered": true,
     "expected_taxpayer": "A",
     "target_entity": "PropCo",
+    "acquirer_groups": [],
     "graph": {
       "nodes": [
         {"id": "A", "name": "Acquirer GmbH", "type": "acquirer"},
@@ -199,10 +210,11 @@
   },
   {
     "id": "tc_012",
-    "description": "Three-level chain with two parallel holdings on middle level: A→H1 (60%)→PropCo (80%) and A→H2 (50%)→PropCo (30%). Effective: 48% + 15% = 63%, below threshold, Z 2 not triggered",
+    "description": "Three-level chain with two parallel holdings on middle level: A->H1 (60%)->PropCo (80%) and A->H2 (50%)->PropCo (30%). Effective: 48% + 15% = 63%, below threshold, Z 2 not triggered",
     "expected_triggered": false,
     "expected_taxpayer": null,
     "target_entity": "PropCo",
+    "acquirer_groups": [],
     "graph": {
       "nodes": [
         {"id": "A", "name": "Acquirer GmbH", "type": "acquirer"},
@@ -220,10 +232,11 @@
   },
   {
     "id": "tc_013",
-    "description": "Three-level chain with two parallel holdings on middle level: A→H1 (100%)→PropCo (50%) and A→H2 (100%)→PropCo (30%). Effective: 50% + 30% = 80%, above threshold, Z 2 triggered",
+    "description": "Three-level chain with two parallel holdings on middle level: A->H1 (100%)->PropCo (50%) and A->H2 (100%)->PropCo (30%). Effective: 50% + 30% = 80%, above threshold, Z 2 triggered",
     "expected_triggered": true,
     "expected_taxpayer": "A",
     "target_entity": "PropCo",
+    "acquirer_groups": [],
     "graph": {
       "nodes": [
         {"id": "A", "name": "Acquirer GmbH", "type": "acquirer"},
@@ -245,6 +258,7 @@
     "expected_triggered": true,
     "expected_taxpayer": "A",
     "target_entity": "PropCo",
+    "acquirer_groups": [],
     "graph": {
       "nodes": [
         {"id": "A", "name": "Acquirer GmbH", "type": "acquirer"},
@@ -267,6 +281,7 @@
     "expected_triggered": true,
     "expected_taxpayer": "A1",
     "target_entity": "PropCo",
+    "acquirer_groups": [],
     "graph": {
       "nodes": [
         {"id": "A1", "name": "Acquirer 1 GmbH", "type": "acquirer"},
@@ -279,6 +294,278 @@
         {"from": "A1", "to": "H", "percentage": 100.0},
         {"from": "H", "to": "PropCo", "percentage": 40.0},
         {"from": "A2", "to": "PropCo", "percentage": 10.0}
+      ]
+    }
+  },
+  {
+    "id": "tc_016",
+    "description": "Acquirer group: A1 (40%) + A2 (40%) direct, grouped under einheitliche Leitung, group total 80% >= 75%, Z 2 triggered by group",
+    "expected_triggered": true,
+    "expected_taxpayer": "G1",
+    "target_entity": "PropCo",
+    "acquirer_groups": [
+      {"id": "G1", "members": ["A1", "A2"]}
+    ],
+    "graph": {
+      "nodes": [
+        {"id": "A1", "name": "Alpha GmbH", "type": "acquirer"},
+        {"id": "A2", "name": "Beta GmbH", "type": "acquirer"},
+        {"id": "PropCo", "name": "PropCo GmbH", "type": "propco"}
+      ],
+      "edges": [
+        {"from": "A1", "to": "PropCo", "percentage": 40.0},
+        {"from": "A2", "to": "PropCo", "percentage": 40.0}
+      ]
+    }
+  },
+  {
+    "id": "tc_017",
+    "description": "Acquirer group: A1 (40%) + A2 (30%) direct, grouped, group total 70% < 75%, not triggered",
+    "expected_triggered": false,
+    "expected_taxpayer": null,
+    "target_entity": "PropCo",
+    "acquirer_groups": [
+      {"id": "G1", "members": ["A1", "A2"]}
+    ],
+    "graph": {
+      "nodes": [
+        {"id": "A1", "name": "Alpha GmbH", "type": "acquirer"},
+        {"id": "A2", "name": "Beta GmbH", "type": "acquirer"},
+        {"id": "PropCo", "name": "PropCo GmbH", "type": "propco"}
+      ],
+      "edges": [
+        {"from": "A1", "to": "PropCo", "percentage": 40.0},
+        {"from": "A2", "to": "PropCo", "percentage": 30.0}
+      ]
+    }
+  },
+  {
+    "id": "tc_018",
+    "description": "Three acquirers, A1+A2 in group (30%+30%=60%), A3 alone (20%), no threshold reached, not triggered",
+    "expected_triggered": false,
+    "expected_taxpayer": null,
+    "target_entity": "PropCo",
+    "acquirer_groups": [
+      {"id": "G1", "members": ["A1", "A2"]}
+    ],
+    "graph": {
+      "nodes": [
+        {"id": "A1", "name": "Alpha GmbH", "type": "acquirer"},
+        {"id": "A2", "name": "Beta GmbH", "type": "acquirer"},
+        {"id": "A3", "name": "Gamma GmbH", "type": "acquirer"},
+        {"id": "PropCo", "name": "PropCo GmbH", "type": "propco"}
+      ],
+      "edges": [
+        {"from": "A1", "to": "PropCo", "percentage": 30.0},
+        {"from": "A2", "to": "PropCo", "percentage": 30.0},
+        {"from": "A3", "to": "PropCo", "percentage": 20.0}
+      ]
+    }
+  },
+  {
+    "id": "tc_019",
+    "description": "Acquirer group with indirect paths: A1->H->PropCo (100%x40%=40%) + A2->PropCo (40%), group total 80%, Z 2 triggered by group",
+    "expected_triggered": true,
+    "expected_taxpayer": "G1",
+    "target_entity": "PropCo",
+    "acquirer_groups": [
+      {"id": "G1", "members": ["A1", "A2"]}
+    ],
+    "graph": {
+      "nodes": [
+        {"id": "A1", "name": "Alpha GmbH", "type": "acquirer"},
+        {"id": "A2", "name": "Beta GmbH", "type": "acquirer"},
+        {"id": "H", "name": "Holding GmbH", "type": "holding"},
+        {"id": "PropCo", "name": "PropCo GmbH", "type": "propco"}
+      ],
+      "edges": [
+        {"from": "A1", "to": "H", "percentage": 100.0},
+        {"from": "H", "to": "PropCo", "percentage": 40.0},
+        {"from": "A2", "to": "PropCo", "percentage": 40.0}
+      ]
+    }
+  },
+  {
+    "id": "tc_020",
+    "description": "Single acquirer A1 reaches 80% alone via Z 2, group also defined but individual takes precedence over group",
+    "expected_triggered": true,
+    "expected_taxpayer": "A1",
+    "target_entity": "PropCo",
+    "acquirer_groups": [
+      {"id": "G1", "members": ["A1", "A2"]}
+    ],
+    "graph": {
+      "nodes": [
+        {"id": "A1", "name": "Alpha GmbH", "type": "acquirer"},
+        {"id": "A2", "name": "Beta GmbH", "type": "acquirer"},
+        {"id": "H", "name": "Holding GmbH", "type": "holding"},
+        {"id": "PropCo", "name": "PropCo GmbH", "type": "propco"}
+      ],
+      "edges": [
+        {"from": "A1", "to": "H", "percentage": 100.0},
+        {"from": "H", "to": "PropCo", "percentage": 80.0},
+        {"from": "A2", "to": "PropCo", "percentage": 5.0}
+      ]
+    }
+  },
+  {
+    "id": "tc_021",
+    "description": "Z 1 direct 80% by A1, group also defined but Z 1 takes precedence over Z 2 group",
+    "expected_triggered": true,
+    "expected_taxpayer": "A1",
+    "target_entity": "PropCo",
+    "acquirer_groups": [
+      {"id": "G1", "members": ["A1", "A2"]}
+    ],
+    "graph": {
+      "nodes": [
+        {"id": "A1", "name": "Alpha GmbH", "type": "acquirer"},
+        {"id": "A2", "name": "Beta GmbH", "type": "acquirer"},
+        {"id": "PropCo", "name": "PropCo GmbH", "type": "propco"}
+      ],
+      "edges": [
+        {"from": "A1", "to": "PropCo", "percentage": 80.0},
+        {"from": "A2", "to": "PropCo", "percentage": 10.0}
+      ]
+    }
+  },
+  {
+    "id": "tc_022",
+    "description": "Acquirer group exactly at 75% threshold (A1 40% + A2 35%), Z 2 triggered by group",
+    "expected_triggered": true,
+    "expected_taxpayer": "G1",
+    "target_entity": "PropCo",
+    "acquirer_groups": [
+      {"id": "G1", "members": ["A1", "A2"]}
+    ],
+    "graph": {
+      "nodes": [
+        {"id": "A1", "name": "Alpha GmbH", "type": "acquirer"},
+        {"id": "A2", "name": "Beta GmbH", "type": "acquirer"},
+        {"id": "PropCo", "name": "PropCo GmbH", "type": "propco"}
+      ],
+      "edges": [
+        {"from": "A1", "to": "PropCo", "percentage": 40.0},
+        {"from": "A2", "to": "PropCo", "percentage": 35.0}
+      ]
+    }
+  },
+  {
+    "id": "tc_023",
+    "description": "Two separate groups, neither reaches 75%: G1 (A1 30% + A2 30% = 60%), G2 (A3 20% + A4 20% = 40%), not triggered",
+    "expected_triggered": false,
+    "expected_taxpayer": null,
+    "target_entity": "PropCo",
+    "acquirer_groups": [
+      {"id": "G1", "members": ["A1", "A2"]},
+      {"id": "G2", "members": ["A3", "A4"]}
+    ],
+    "graph": {
+      "nodes": [
+        {"id": "A1", "name": "Alpha GmbH", "type": "acquirer"},
+        {"id": "A2", "name": "Beta GmbH", "type": "acquirer"},
+        {"id": "A3", "name": "Gamma GmbH", "type": "acquirer"},
+        {"id": "A4", "name": "Delta GmbH", "type": "acquirer"},
+        {"id": "PropCo", "name": "PropCo GmbH", "type": "propco"}
+      ],
+      "edges": [
+        {"from": "A1", "to": "PropCo", "percentage": 30.0},
+        {"from": "A2", "to": "PropCo", "percentage": 30.0},
+        {"from": "A3", "to": "PropCo", "percentage": 20.0},
+        {"from": "A4", "to": "PropCo", "percentage": 20.0}
+      ]
+    }
+  },
+  {
+    "id": "tc_024",
+    "description": "Two groups, G2 reaches 75%: G1 (A1 20% + A2 20% = 40%), G2 (A3 40% + A4 35% = 75%), Z 2 triggered by G2",
+    "expected_triggered": true,
+    "expected_taxpayer": "G2",
+    "target_entity": "PropCo",
+    "acquirer_groups": [
+      {"id": "G1", "members": ["A1", "A2"]},
+      {"id": "G2", "members": ["A3", "A4"]}
+    ],
+    "graph": {
+      "nodes": [
+        {"id": "A1", "name": "Alpha GmbH", "type": "acquirer"},
+        {"id": "A2", "name": "Beta GmbH", "type": "acquirer"},
+        {"id": "A3", "name": "Gamma GmbH", "type": "acquirer"},
+        {"id": "A4", "name": "Delta GmbH", "type": "acquirer"},
+        {"id": "PropCo", "name": "PropCo GmbH", "type": "propco"}
+      ],
+      "edges": [
+        {"from": "A1", "to": "PropCo", "percentage": 20.0},
+        {"from": "A2", "to": "PropCo", "percentage": 20.0},
+        {"from": "A3", "to": "PropCo", "percentage": 40.0},
+        {"from": "A4", "to": "PropCo", "percentage": 35.0}
+      ]
+    }
+  },
+  {
+    "id": "tc_025",
+    "description": "Group with mixed direct+indirect: A1 (25% direct + 100%x20% indirect = 45%) + A2 (30% direct), group total 75%, Z 2 triggered by group",
+    "expected_triggered": true,
+    "expected_taxpayer": "G1",
+    "target_entity": "PropCo",
+    "acquirer_groups": [
+      {"id": "G1", "members": ["A1", "A2"]}
+    ],
+    "graph": {
+      "nodes": [
+        {"id": "A1", "name": "Alpha GmbH", "type": "acquirer"},
+        {"id": "A2", "name": "Beta GmbH", "type": "acquirer"},
+        {"id": "H", "name": "Holding GmbH", "type": "holding"},
+        {"id": "PropCo", "name": "PropCo GmbH", "type": "propco"}
+      ],
+      "edges": [
+        {"from": "A1", "to": "PropCo", "percentage": 25.0},
+        {"from": "A1", "to": "H", "percentage": 100.0},
+        {"from": "H", "to": "PropCo", "percentage": 20.0},
+        {"from": "A2", "to": "PropCo", "percentage": 30.0}
+      ]
+    }
+  },
+  {
+    "id": "tc_026",
+    "description": "Group with mixed direct+indirect just below threshold: A1 (25% direct + 80%x20% indirect = 41%) + A2 (33%), group total 74%, not triggered",
+    "expected_triggered": false,
+    "expected_taxpayer": null,
+    "target_entity": "PropCo",
+    "acquirer_groups": [
+      {"id": "G1", "members": ["A1", "A2"]}
+    ],
+    "graph": {
+      "nodes": [
+        {"id": "A1", "name": "Alpha GmbH", "type": "acquirer"},
+        {"id": "A2", "name": "Beta GmbH", "type": "acquirer"},
+        {"id": "H", "name": "Holding GmbH", "type": "holding"},
+        {"id": "PropCo", "name": "PropCo GmbH", "type": "propco"}
+      ],
+      "edges": [
+        {"from": "A1", "to": "PropCo", "percentage": 25.0},
+        {"from": "A1", "to": "H", "percentage": 80.0},
+        {"from": "H", "to": "PropCo", "percentage": 20.0},
+        {"from": "A2", "to": "PropCo", "percentage": 33.0}
+      ]
+    }
+  },
+  {
+    "id": "tc_027",
+    "description": "Two acquirers both 40% direct, NOT in a group (no group defined), should not trigger despite combined 80%",
+    "expected_triggered": false,
+    "expected_taxpayer": null,
+    "target_entity": "PropCo",
+    "acquirer_groups": [],
+    "graph": {
+      "nodes": [
+        {"id": "A1", "name": "Alpha GmbH", "type": "acquirer"},
+        {"id": "A2", "name": "Beta GmbH", "type": "acquirer"},
+        {"id": "PropCo", "name": "PropCo GmbH", "type": "propco"}
+      ],
+      "edges": [
+        {"from": "A1", "to": "PropCo", "percentage": 40.0},
+        {"from": "A2", "to": "PropCo", "percentage": 40.0}
       ]
     }
   }
