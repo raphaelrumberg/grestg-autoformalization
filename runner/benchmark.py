@@ -12,14 +12,62 @@ import matplotlib.pyplot as plt
 
 import config
 from llm.base import LLMClient
-from runner.formalizer import formalize
+from runner.formalizer import formalize, fix_code
 from runner.test_runner import run_tests, print_results, plot_results
+
+MAX_FIX_ATTEMPTS = 3
+
+
+def _build_failed_cases_info(results: dict) -> list:
+    """Extract info about failing test cases for the fix prompt."""
+    with open(config.TEST_SUITE_PATH, "r", encoding="utf-8") as f:
+        all_cases = {tc["id"]: tc for tc in json.load(f)}
+
+    failed = []
+    for c in results["cases"]:
+        if not c["passed"]:
+            tc = all_cases[c["id"]]
+            actual_str = f"({c['actual_triggered']}, {c['actual_taxpayer']!r})" if c["error"] is None else f"ERROR: {c['error']}"
+            failed.append({
+                "id": c["id"],
+                "description": c["description"],
+                "graph": tc["graph"],
+                "target_entity": tc["target_entity"],
+                "acquirer_groups": tc.get("acquirer_groups", []),
+                "expected": f"({c['expected_triggered']}, {c['expected_taxpayer']!r})",
+                "actual": actual_str,
+            })
+    return failed
+
+
+def _save_sub_run(run_dir: str, sub_idx: int, code: str, results: dict):
+    """Save code and results for a correction sub-run."""
+    sub_dir = os.path.join(run_dir, f"fix_{sub_idx}")
+    os.makedirs(sub_dir, exist_ok=True)
+    with open(os.path.join(sub_dir, "generated_code.py"), "w", encoding="utf-8") as f:
+        f.write(code)
+    plot_results(results, os.path.join(sub_dir, "test_results.png"))
+    sub_report = {
+        "fix_attempt": sub_idx,
+        "passed": results["passed"],
+        "failed": results["failed"],
+        "total": results["total"],
+        "pass_rate": results["passed"] / results["total"] if results["total"] > 0 else 0,
+        "cases": results["cases"],
+    }
+    with open(os.path.join(sub_dir, "test_report.json"), "w", encoding="utf-8") as f:
+        json.dump(sub_report, f, indent=2)
+    return sub_dir
 
 
 def run_benchmark(num_runs: int, client: LLMClient):
     """
     Run formalize -> test for num_runs iterations, saving per-run reports
     and an overall summary report at the end.
+
+    When a run has failing tests, up to MAX_FIX_ATTEMPTS correction sub-runs
+    are attempted where the LLM receives the failing cases and is asked to fix
+    the code.
     """
     model = client.model_name()
     timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
@@ -56,6 +104,21 @@ def run_benchmark(num_runs: int, client: LLMClient):
             # Save test results plot
             plot_results(results, os.path.join(run_dir, "test_results.png"))
 
+            # Correction loop
+            fix_attempts = 0
+            while results["failed"] > 0 and fix_attempts < MAX_FIX_ATTEMPTS:
+                fix_attempts += 1
+                print(f"\n  --- Fix attempt {fix_attempts}/{MAX_FIX_ATTEMPTS} ---\n")
+
+                failed_info = _build_failed_cases_info(results)
+                generated_code = fix_code(client, generated_code, failed_info)
+
+                results = run_tests()
+                print_results(results)
+
+                sub_dir = _save_sub_run(run_dir, fix_attempts, generated_code, results)
+                print(f"  Fix {fix_attempts} saved to {sub_dir}/")
+
             # Save test results JSON
             run_report = {
                 "run": i,
@@ -63,6 +126,7 @@ def run_benchmark(num_runs: int, client: LLMClient):
                 "failed": results["failed"],
                 "total": results["total"],
                 "pass_rate": results["passed"] / results["total"] if results["total"] > 0 else 0,
+                "fix_attempts": fix_attempts,
                 "cases": results["cases"],
                 "error": None,
             }
@@ -88,6 +152,7 @@ def run_benchmark(num_runs: int, client: LLMClient):
                 "failed": total_cases,
                 "total": total_cases,
                 "pass_rate": 0.0,
+                "fix_attempts": 0,
                 "cases": [],
                 "error": error_msg,
             }
