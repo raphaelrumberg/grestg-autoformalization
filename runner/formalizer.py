@@ -12,6 +12,12 @@ SYSTEM_PROMPT = (
     "target_entity: str, acquirer_groups: list = None) -> Tuple[bool, Optional[str]]"
 )
 
+REFLECTION_SYSTEM_PROMPT = (
+    "You are a legal formalization expert reviewing your previous implementation. "
+    "Analyze the failing test cases and explain concisely what the previous "
+    "implementation got wrong or forgot. Do NOT output any code — only your analysis."
+)
+
 FIX_SYSTEM_PROMPT = (
     "You are a legal formalization expert. Generate only valid Python code. "
     "Your entire response must be a single ```python code block."
@@ -67,9 +73,12 @@ def formalize(client: LLMClient) -> str:
     return code
 
 
-def fix_code(client: LLMClient, code: str, failed_cases: list) -> str:
+def fix_code(client: LLMClient, code: str, failed_cases: list) -> tuple:
     """
-    Ask the LLM to fix generated code based on failing test cases.
+    Ask the LLM to reflect on what went wrong, then fix the generated code.
+
+    First performs a reflection step where the LLM analyzes the failures
+    without producing code, then uses that analysis to generate a fix.
 
     Args:
         client: An LLMClient instance to use for code generation.
@@ -78,7 +87,8 @@ def fix_code(client: LLMClient, code: str, failed_cases: list) -> str:
             target_entity, acquirer_groups, expected, actual.
 
     Returns:
-        The fixed Python code as a string.
+        A tuple of (fixed_code, reflection) where reflection is the LLM's
+        analysis of what went wrong.
     """
     failures_text = ""
     for fc in failed_cases:
@@ -91,14 +101,26 @@ def fix_code(client: LLMClient, code: str, failed_cases: list) -> str:
             f"Actual:   {fc['actual']}\n"
         )
 
-    user_message = (
-        f"The following code has failing test cases. "
-        f"Fix the code so that all test cases pass.\n\n"
+    reflection_message = (
+        f"Review the following code and its failing test cases. "
+        f"Explain what the implementation got wrong or forgot.\n\n"
         f"## Current code\n```python\n{code}\n```\n\n"
         f"## Failing test cases\n{failures_text}"
     )
 
-    raw_response = client.generate(FIX_SYSTEM_PROMPT, user_message)
+    reflection = client.generate(REFLECTION_SYSTEM_PROMPT, reflection_message)
+
+    print(f"\n  Reflection:\n{reflection}\n")
+
+    fix_message = (
+        f"The following code has failing test cases. "
+        f"Fix the code so that all test cases pass.\n\n"
+        f"## Analysis of what went wrong\n{reflection}\n\n"
+        f"## Current code\n```python\n{code}\n```\n\n"
+        f"## Failing test cases\n{failures_text}"
+    )
+
+    raw_response = client.generate(FIX_SYSTEM_PROMPT, fix_message)
 
     code = _extract_code(raw_response)
     _write_code(code)
@@ -106,4 +128,4 @@ def fix_code(client: LLMClient, code: str, failed_cases: list) -> str:
     line_count = code.count("\n") + 1
     print(f"Fix complete: {line_count} lines written to {config.GENERATED_CODE_PATH}")
 
-    return code
+    return code, reflection

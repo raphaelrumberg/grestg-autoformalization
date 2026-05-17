@@ -40,15 +40,20 @@ def _build_failed_cases_info(results: dict) -> list:
     return failed
 
 
-def _save_sub_run(run_dir: str, sub_idx: int, code: str, results: dict):
-    """Save code and results for a correction sub-run."""
+def _save_sub_run(run_dir: str, sub_idx: int, code: str, results: dict,
+                  reflection: str = ""):
+    """Save code, results, and reflection for a correction sub-run."""
     sub_dir = os.path.join(run_dir, f"fix_{sub_idx}")
     os.makedirs(sub_dir, exist_ok=True)
     with open(os.path.join(sub_dir, "generated_code.py"), "w", encoding="utf-8") as f:
         f.write(code)
+    if reflection:
+        with open(os.path.join(sub_dir, "reflection.md"), "w", encoding="utf-8") as f:
+            f.write(reflection)
     plot_results(results, os.path.join(sub_dir, "test_results.png"))
     sub_report = {
         "fix_attempt": sub_idx,
+        "reflection": reflection,
         "passed": results["passed"],
         "failed": results["failed"],
         "total": results["total"],
@@ -111,12 +116,13 @@ def run_benchmark(num_runs: int, client: LLMClient):
                 print(f"\n  --- Fix attempt {fix_attempts}/{MAX_FIX_ATTEMPTS} ---\n")
 
                 failed_info = _build_failed_cases_info(results)
-                generated_code = fix_code(client, generated_code, failed_info)
+                generated_code, reflection = fix_code(client, generated_code, failed_info)
 
                 results = run_tests()
                 print_results(results)
 
-                sub_dir = _save_sub_run(run_dir, fix_attempts, generated_code, results)
+                sub_dir = _save_sub_run(run_dir, fix_attempts, generated_code, results,
+                                        reflection)
                 print(f"  Fix {fix_attempts} saved to {sub_dir}/")
 
             # Save test results JSON

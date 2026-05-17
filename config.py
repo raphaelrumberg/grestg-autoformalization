@@ -1,4 +1,4 @@
-MODEL_NAME = "claude-sonnet-4-5"
+MODEL_NAME = "claude-opus-4-7"
 GEMINI_MODEL_NAME = "gemini-2.5-flash"
 OPENAI_MODEL_NAME = "gpt-4o"
 GENERATED_CODE_PATH = "generated/generated_code.py"
