@@ -1,5 +1,6 @@
 import json
 import os
+import time
 
 import requests
 
@@ -7,6 +8,8 @@ import config
 from llm.base import LLMClient
 
 GEMINI_API_URL = "https://generativelanguage.googleapis.com/v1beta/models/{model}:generateContent"
+MAX_RETRIES = 5
+INITIAL_BACKOFF = 2
 
 
 class GeminiClient(LLMClient):
@@ -36,22 +39,45 @@ class GeminiClient(LLMClient):
             ],
             "generationConfig": {
                 "maxOutputTokens": 8192,
+                "thinkingConfig": {"thinkingBudget": 0},
             }
         }
-        resp = requests.post(
-            url,
-            params={"key": self._api_key},
-            headers={"Content-Type": "application/json"},
-            json=payload,
-            timeout=120,
-        )
-        resp.raise_for_status()
+        last_error = None
+        for attempt in range(MAX_RETRIES):
+            resp = requests.post(
+                url,
+                params={"key": self._api_key},
+                headers={"Content-Type": "application/json"},
+                json=payload,
+                timeout=120,
+            )
+            if resp.status_code in (429, 500, 502, 503, 504):
+                wait = INITIAL_BACKOFF * (2 ** attempt)
+                print(f"  Gemini API {resp.status_code}; retrying in {wait}s "
+                      f"(attempt {attempt + 1}/{MAX_RETRIES})...")
+                time.sleep(wait)
+                last_error = resp
+                continue
+            resp.raise_for_status()
+            break
+        else:
+            raise requests.exceptions.HTTPError(
+                f"Gemini API still failing after {MAX_RETRIES} retries "
+                f"(last status {last_error.status_code}).",
+                response=last_error,
+            )
         data = resp.json()
 
         candidates = data.get("candidates", [])
         if not candidates:
             raise ValueError(
                 f"Gemini API returned no candidates. Response: {json.dumps(data, indent=2)}"
+            )
+        finish_reason = candidates[0].get("finishReason", "")
+        if finish_reason == "MAX_TOKENS":
+            raise ValueError(
+                "Gemini response truncated (finishReason=MAX_TOKENS); "
+                "refusing to return partial code."
             )
         parts = candidates[0].get("content", {}).get("parts", [])
         if not parts or not parts[0].get("text"):

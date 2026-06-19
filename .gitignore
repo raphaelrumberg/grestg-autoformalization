@@ -10,6 +10,10 @@ venv/
 # IDE
 .idea/
 
+# macOS
+.DS_Store
+**/.DS_Store
+
 # Generated outputs
 generated/generated_code.py
 results/
