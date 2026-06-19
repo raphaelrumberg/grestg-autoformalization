@@ -3,3 +3,5 @@ requests
 networkx
 matplotlib
 python-dotenv
+numpy
+scipy

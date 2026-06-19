@@ -9,18 +9,18 @@ import matplotlib.pyplot as plt
 import config
 
 
-def run_tests() -> dict:
+def run_tests(suite_path: str) -> dict:
     """
-    Load the test suite and run each case against the generated formalization.
+    Load the given test suite and run each case against the generated formalization.
 
     The generated code is always loaded fresh from disk via importlib to ensure
     the latest version is tested. A case passes only if both expected_triggered
     and expected_taxpayer match the function's return value.
 
     Returns:
-        A dict with keys: passed, failed, total, cases (list of per-case results).
+        A dict with keys: passed, failed, total, suite_path, cases.
     """
-    with open(config.TEST_SUITE_PATH, "r", encoding="utf-8") as f:
+    with open(suite_path, "r", encoding="utf-8") as f:
         cases = json.load(f)
 
     # Load generated code fresh from disk
@@ -67,7 +67,8 @@ def run_tests() -> dict:
             failed += 1
         results.append(case_result)
 
-    return {"passed": passed, "failed": failed, "total": len(cases), "cases": results}
+    return {"passed": passed, "failed": failed, "total": len(cases),
+            "suite_path": suite_path, "cases": results}
 
 
 def print_results(results: dict):

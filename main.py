@@ -31,13 +31,21 @@ def cmd_formalize(args):
     formalize(client)
 
 
-def cmd_test(_args):
-    """Run the test suite against the generated formalization."""
-    results = run_tests()
-    print_results(results)
-    plot_results(results, os.path.join(config.RESULTS_DIR, "test_results.png"))
+SUITE_PATHS = {
+    "train": config.TRAIN_SUITE_PATH,
+    "test": config.TEST_SUITE_PATH,
+}
 
-    with open(config.TEST_SUITE_PATH, "r", encoding="utf-8") as f:
+
+def cmd_test(args):
+    """Run a test suite against the generated formalization."""
+    suite_path = SUITE_PATHS[args.suite]
+    print(f"Suite: {args.suite} ({suite_path})")
+    results = run_tests(suite_path)
+    print_results(results)
+    plot_results(results, os.path.join(config.RESULTS_DIR, f"{args.suite}_results.png"))
+
+    with open(suite_path, "r", encoding="utf-8") as f:
         all_cases = json.load(f)
 
     case_data = {tc["id"]: tc for tc in all_cases}
@@ -57,17 +65,19 @@ def cmd_benchmark(args):
 
 def cmd_visualize(args):
     """Visualize the ownership graph for a specific test case."""
-    with open(config.TEST_SUITE_PATH, "r", encoding="utf-8") as f:
-        all_cases = json.load(f)
+    for suite_name in ("train", "test"):
+        with open(SUITE_PATHS[suite_name], "r", encoding="utf-8") as f:
+            all_cases = json.load(f)
 
-    for tc in all_cases:
-        if tc["id"] == args.case:
-            output_path = os.path.join(config.RESULTS_DIR, f"graph_{tc['id']}.png")
-            visualize_graph(tc["graph"], tc["id"], output_path,
-                            tc.get("acquirer_groups", []))
-            return
+        for tc in all_cases:
+            if tc["id"] == args.case:
+                output_path = os.path.join(config.RESULTS_DIR, f"graph_{tc['id']}.png")
+                visualize_graph(tc["graph"], tc["id"], output_path,
+                                tc.get("acquirer_groups", []))
+                return
 
-    print(f"Error: case '{args.case}' not found in {config.TEST_SUITE_PATH}")
+    print(f"Error: case '{args.case}' not found in any suite "
+          f"({', '.join(SUITE_PATHS.values())})")
 
 
 def main():
@@ -81,7 +91,10 @@ def main():
     form_parser.add_argument("--model", choices=["claude", "gemini", "openai"], default="claude",
                              help="LLM provider to use (default: claude)")
 
-    subparsers.add_parser("test", help="Run test suite against generated code")
+    test_parser = subparsers.add_parser("test", help="Run a test suite against generated code")
+    test_parser.add_argument("--suite", choices=["train", "test"], default="train",
+                             help="Suite to run (default: train; 'test' is the held-out set "
+                                  "reserved for final metrics)")
 
     bench_parser = subparsers.add_parser("benchmark", help="Run formalize+test N times and generate reports")
     bench_parser.add_argument("--runs", type=int, required=True, help="Number of runs")
