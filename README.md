@@ -18,33 +18,26 @@ OPENAI_API_KEY=sk-...
 
 ## Test suite design (train / held-out test)
 
-The suite contains **60 cases** stratified into:
+The suite contains **71 cases** stratified into:
 
-- `test_suite/train.json`: **40 cases**. The only suite the LLM ever sees:
+- `test_suite/train.json`: **49 cases**. The only suite the LLM ever sees:
   failing train cases are fed back into the reflection/fix loop.
-- `test_suite/test.json`: **20 cases, held out**. Evaluated exactly once per
+- `test_suite/test.json`: **22 cases, held out**. Evaluated exactly once per
   benchmark run, after the fix loop terminates; never placed in any LLM
   prompt. The **generalization gap** (train − test pass rate) is reported per
   run and in the overall report.
 
-Every case carries a `kind` (statutory mechanism: `z1_direct`, `z2_chain`,
+Every case carries a `kind` (statutory mechanism: `z2_direct`, `z2_chain`,
 `z2_summed_paths`, `z2_mixed`, `multi_acquirer`, `group_direct`,
-`group_mixed`, `precedence`) and a `legal_rationale` citing the relevant
-Ziffer/sentence of § 1 Abs 3. Nine train cases form metamorphic-relation sets
-(relabeling, scaling, zero-edge). Both splits cover every kind, both outcome
+`group_mixed`, `precedence`, `z1_gesellschafterwechsel`) and a `legal_rationale` citing the relevant
+Ziffer/sentence of § 1 Abs 3. Eleven train cases form metamorphic-relation sets
+(relabeling, scaling, zero-edge, window-shift). Both splits cover every kind, both outcome
 labels where the kind has both, and threshold boundaries (74.99 / 75.0 /
 75.01).
 
-Suites are generated and validated (schema, capital-structure invariants,
-reference-oracle re-derivation of every expected outcome, stratification
-constraints) by:
-
-```bash
-python test_suite/build_suite.py
-```
-
-See `test_suite/SPLIT_METHODOLOGY.md` for the full design rationale and
-references.
+The suites are curated by hand as JSON and checked into the repository. Each
+case pairs an ownership structure with the tax outcome the statute prescribes,
+a `kind` label, and a `legal_rationale`. The test runner reads them directly.
 
 ## Commands
 
@@ -130,10 +123,8 @@ Output: `results/graph_<case_id>.png`
 ├── prompt.txt               # LLM prompt template
 ├── statutory_text/          # Legal source text
 ├── test_suite/
-│   ├── train.json           # 40 cases: LLM-visible (fix loop)
-│   ├── test.json            # 20 cases: held out (final metric)
-│   ├── build_suite.py       # suite generator + validator (reference oracle)
-│   └── SPLIT_METHODOLOGY.md # design rationale, stratification, references
+│   ├── train.json           # 49 cases: LLM-visible (fix loop)
+│   └── test.json            # 22 cases: held out (final metric)
 ├── llm/                     # LLM client implementations
 ├── runner/
 │   ├── formalizer.py        # Code generation + reflection/fix via LLM

@@ -7,9 +7,8 @@ from llm.base import LLMClient
 SYSTEM_PROMPT = (
     "You are a legal formalization expert. Generate only valid Python code. "
     "Your entire response must be a single ```python code block. "
-    "Start with 'from typing import Optional, Tuple' and then define exactly one "
-    "function: def check_anteilsvereinigung(graph: dict, "
-    "target_entity: str, acquirer_groups: list = None) -> Tuple[bool, Optional[str]]"
+    "Define exactly one function: def is_grest_triggered(graph: dict, "
+    "target_entity: str, acquirer_groups: list = None) -> bool"
 )
 
 REFLECTION_SYSTEM_PROMPT = (

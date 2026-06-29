@@ -30,14 +30,14 @@ def _build_failed_cases_info(train_results: dict) -> list:
     for c in train_results["cases"]:
         if not c["passed"]:
             tc = all_cases[c["id"]]
-            actual_str = f"({c['actual_triggered']}, {c['actual_taxpayer']!r})" if c["error"] is None else f"ERROR: {c['error']}"
+            actual_str = f"{c['actual_triggered']}" if c["error"] is None else f"ERROR: {c['error']}"
             failed.append({
                 "id": c["id"],
                 "description": c["description"],
                 "graph": tc["graph"],
                 "target_entity": tc["target_entity"],
                 "acquirer_groups": tc.get("acquirer_groups", []),
-                "expected": f"({c['expected_triggered']}, {c['expected_taxpayer']!r})",
+                "expected": f"{c['expected_triggered']}",
                 "actual": actual_str,
             })
     return failed

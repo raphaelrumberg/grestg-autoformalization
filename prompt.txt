@@ -6,14 +6,15 @@ You are a legal formalization expert specializing in Austrian tax law. Your task
 ## Task
 Implement exactly this function signature:
 
-from typing import Optional, Tuple
-def check_anteilsvereinigung(graph: dict, target_entity: str, acquirer_groups: list = None) -> Tuple[bool, Optional[str]]:
+def is_grest_triggered(graph: dict, target_entity: str, acquirer_groups: list = None) -> bool:
 
-The function receives an ownership graph, the ID of the property-owning entity (PropCo) under examination, and an optional list of acquirer groups. It returns:
-- (True, <liable_id>) if Grunderwerbsteuer is triggered, where <liable_id> is either the entity ID of the liable acquirer or the group ID of the liable acquirer group
-- (False, None) if no tax is triggered
+The function receives an ownership graph, the ID of the property-owning entity (PropCo) under examination, and an optional list of acquirer groups. It decides ONLY WHETHER Grunderwerbsteuer is triggered under § 1 Abs 3 GrEStG (Z 1 or Z 2) for that entity — not who is liable. It returns:
+- True if the tax is triggered
+- False otherwise
 
-Return ONLY a single ```python code block containing this function. No explanation, no additional functions, no imports outside the function body. Start the code block with 'from typing import Optional, Tuple'.
+Scope: § 1 Abs 3 is the Steuertatbestand — it decides WHETHER a taxable event occurs. WHO owes the tax (Steuerschuldner, § 9 GrEStG) is outside the scope of this provision and must NOT be determined or returned.
+
+Return ONLY a single ```python code block containing this function. No explanation, no additional functions, no imports outside the function body.
 
 ## Input: JSON graph schema
 The graph dict has exactly two keys:
@@ -27,8 +28,11 @@ The graph dict has exactly two keys:
   - "from":       string - id of the parent entity (the one holding shares)
   - "to":         string - id of the child entity (the one whose shares are held)
   - "percentage": float  - ownership percentage (0.0 to 100.0)
+  - "new_shareholder": bool (optional) - this direct transfer goes to a NEW shareholder
+  - "within_7y":       bool (optional) - this direct transfer falls within the relevant 7-year window
 
 Edges are directed: {"from": "A", "to": "P", "percentage": 80.0} means A holds 80% of P.
+The two boolean flags are relevant only for Z 1 (see "Legal reading" below). If a flag is absent or false, the edge does NOT count towards Z 1. The flags do not affect Z 2.
 
 ## Input: Acquirer groups
 The acquirer_groups parameter is a list of group objects, each with:
@@ -38,5 +42,13 @@ The acquirer_groups parameter is a list of group objects, each with:
 An acquirer group represents acquirers that are economically unified under a single leadership ("einheitliche Leitung") or under the controlling influence of a single person. When checking whether shares are consolidated "in der Hand einer Erwerbergruppe", the effective stakes of all group members are summed.
 
 If acquirer_groups is None or an empty list, only individual acquirer checks apply.
+
+## Legal reading (what triggers the tax)
+The tax is triggered if Z 1 OR Z 2 is satisfied:
+
+- Z 1 (Gesellschafterwechsel): the sum of the percentages of all DIRECT edges into target_entity that are flagged BOTH new_shareholder=true AND within_7y=true reaches at least 75%. This is an aggregate over all such transfers (not per acquirer) and is purely direct — do not multiply across levels for Z 1.
+- Z 2 (Anteilsvereinigung): at least 75% of the shares are united, directly or indirectly, in the hand of a single acquirer or — only if no single acquirer reaches 75% — a single acquirer group. For indirect (mittelbar) stakes, multiply the percentages along each level; parallel paths add up, and the direct and indirect stakes of the same hand add up. Candidate single hands are "acquirer"-typed nodes (and the given groups); "holding"-typed nodes are not themselves acquirers.
+
+You only need to return WHETHER the tax is triggered. The statutory precedence rules (direct before indirect; among indirect acquisitions the one closest to the property company) and the identity of the liable party only resolve WHO is taxed and are NOT required for this decision.
 
 ## Statutory text

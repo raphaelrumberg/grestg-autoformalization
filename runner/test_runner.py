@@ -14,8 +14,8 @@ def run_tests(suite_path: str) -> dict:
     Load the given test suite and run each case against the generated formalization.
 
     The generated code is always loaded fresh from disk via importlib to ensure
-    the latest version is tested. A case passes only if both expected_triggered
-    and expected_taxpayer match the function's return value.
+    the latest version is tested. A case passes iff the function's returned bool
+    matches expected_triggered (§ 1 Abs 3 = whether the tax is triggered).
 
     Returns:
         A dict with keys: passed, failed, total, suite_path, cases.
@@ -29,7 +29,7 @@ def run_tests(suite_path: str) -> dict:
     )
     module = importlib.util.module_from_spec(spec)
     spec.loader.exec_module(module)
-    check_fn = module.check_anteilsvereinigung
+    check_fn = module.is_grest_triggered
 
     results = []
     passed = 0
@@ -40,24 +40,18 @@ def run_tests(suite_path: str) -> dict:
             "id": case["id"],
             "description": case["description"],
             "expected_triggered": case["expected_triggered"],
-            "expected_taxpayer": case["expected_taxpayer"],
             "actual_triggered": None,
-            "actual_taxpayer": None,
             "passed": False,
             "error": None,
         }
         try:
-            triggered, taxpayer = check_fn(
+            triggered = check_fn(
                 case["graph"],
                 case["target_entity"],
                 case.get("acquirer_groups", []),
             )
             case_result["actual_triggered"] = triggered
-            case_result["actual_taxpayer"] = taxpayer
-            case_result["passed"] = (
-                triggered == case["expected_triggered"]
-                and taxpayer == case["expected_taxpayer"]
-            )
+            case_result["passed"] = (triggered == case["expected_triggered"])
         except Exception:
             case_result["error"] = traceback.format_exc()
 
@@ -73,10 +67,7 @@ def run_tests(suite_path: str) -> dict:
 
 def print_results(results: dict):
     """Print a simple aligned table of test results to stdout."""
-    header = (
-        f"{'ID':<10} {'Triggered':<12} {'Exp.Tax':<10} {'Act.Tax':<10} "
-        f"{'Status':<8} {'Error'}"
-    )
+    header = f"{'ID':<10} {'Exp/Act':<14} {'Status':<8} {'Error'}"
     print(header)
     print("-" * len(header))
     for c in results["cases"]:
@@ -88,15 +79,7 @@ def print_results(results: dict):
         else:
             trig_str = f"{c['expected_triggered']}/CRASH"
 
-        exp_tp = c["expected_taxpayer"] or "-"
-        act_tp = c["actual_taxpayer"] or "-"
-        if c["error"]:
-            act_tp = "CRASH"
-
-        print(
-            f"{c['id']:<10} {trig_str:<12} {exp_tp:<10} {act_tp:<10} "
-            f"{status:<8} {error_snippet}"
-        )
+        print(f"{c['id']:<10} {trig_str:<14} {status:<8} {error_snippet}")
     print(f"\nTotal: {results['total']}  Passed: {results['passed']}  Failed: {results['failed']}")
 
 
@@ -106,7 +89,7 @@ def plot_results(results: dict, output_path: str):
 
     Left subplot: horizontal bar chart (one bar per case, green=pass / red=fail).
     Right subplot: pie chart of overall pass rate.
-    A case passes only if both triggered status and taxpayer ID match.
+    A case passes iff the returned bool matches expected_triggered.
 
     Args:
         results: The dict returned by run_tests().

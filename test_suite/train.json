@@ -2,10 +2,9 @@
   {
     "id": "tc_001",
     "description": "Direct acquisition of 80%. Above threshold, should trigger (Z 1)",
-    "kind": "z1_direct",
-    "legal_rationale": "Z 1 (per-acquirer reading, Q1): 80% of all shares pass directly to a single new shareholder, >= 75% threshold met. Z 2 lit b sublit bb would equally be met, but Z 1 precedes ('Soweit eine Besteuerung nach Z 1 nicht in Betracht kommt').",
+    "kind": "z2_direct",
+    "legal_rationale": "Z 2 lit b aa: 80% unite directly in a single hand (>= 75%). A single acquirer holding >= 75% directly is a Vereinigung in einer Hand. (The Z 1 Gesellschafterwechsel reading would require the new_shareholder/within_7y flags, absent here.)",
     "expected_triggered": true,
-    "expected_taxpayer": "A",
     "target_entity": "PropCo",
     "acquirer_groups": [],
     "graph": {
@@ -33,10 +32,9 @@
   {
     "id": "tc_002",
     "description": "Direct acquisition of 60%. Below threshold, should not trigger",
-    "kind": "z1_direct",
-    "legal_rationale": "60% < 75%: neither Z 1 (direct transfer) nor Z 2 (effective stake) reaches the 'mindestens 75%' threshold.",
+    "kind": "z2_direct",
+    "legal_rationale": "60% < 75%: neither Z 1 (direct transfer) nor Z 2 (effective stake) reaches the  75% threshold.",
     "expected_triggered": false,
-    "expected_taxpayer": null,
     "target_entity": "PropCo",
     "acquirer_groups": [],
     "graph": {
@@ -64,10 +62,9 @@
   {
     "id": "tc_003",
     "description": "Direct acquisition of exactly 75%, at threshold, should trigger (Z 1)",
-    "kind": "z1_direct",
-    "legal_rationale": "Z 1: 'mindestens 75%' is inclusive, so exactly 75.0% direct triggers.",
+    "kind": "z2_direct",
+    "legal_rationale": "Z 2: exactly 75.0% united in a single hand triggers ('mindestens 75%' inclusive).",
     "expected_triggered": true,
-    "expected_taxpayer": "A",
     "target_entity": "PropCo",
     "acquirer_groups": [],
     "graph": {
@@ -96,9 +93,8 @@
     "id": "tc_004",
     "description": "Two-hop indirect chain, effective stake exactly 75% (100% x 75%), Z 2 triggered",
     "kind": "z2_chain",
-    "legal_rationale": "Z 2 lit b: indirect Vereinigung via one chain; Schlussteil S1 multiplication 100% x 75% = 75% >= 75%.",
+    "legal_rationale": "Z 2 lit b: indirect Vereinigung via one chain. Schlussteil S1 multiplication 100% x 75% = 75% >= 75%.",
     "expected_triggered": true,
-    "expected_taxpayer": "A",
     "target_entity": "PropCo",
     "acquirer_groups": [],
     "graph": {
@@ -139,7 +135,6 @@
     "kind": "z2_summed_paths",
     "legal_rationale": "Z 2 lit b: two parallel indirect paths (100x50 + 100x25) sum to 75% in one hand; per-level multiplication per Schlussteil S1, parallel paths additive (convention Q6).",
     "expected_triggered": true,
-    "expected_taxpayer": "A",
     "target_entity": "PropCo",
     "acquirer_groups": [],
     "graph": {
@@ -195,7 +190,6 @@
     "kind": "z2_chain",
     "legal_rationale": "Z 2 lit b + Schlussteil S1: 100% x 100% x 80% = 80% >= 75%.",
     "expected_triggered": true,
-    "expected_taxpayer": "A",
     "target_entity": "PropCo",
     "acquirer_groups": [],
     "graph": {
@@ -244,9 +238,8 @@
     "id": "tc_009",
     "description": "Two acquirers each hold 40% directly, neither alone reaches 75%, no group defined, not triggered",
     "kind": "multi_acquirer",
-    "legal_rationale": "No acquirer individually >= 75% (40/40) and no Erwerbergruppe defined (Z 4 input absent) -> no Z 2. An aggregate reading of Z 1 (80% to new shareholders in total) is deliberately not modeled (Q1).",
+    "legal_rationale": "No single hand >= 75% (40/40) and no Erwerbergruppe defined -> no Z 2. Z 1 does not fire either: the transfers carry no new_shareholder/within_7y flags (Weg 1). The intentional aggregate-Z 1 counterpart of this shape is tc_061.",
     "expected_triggered": false,
-    "expected_taxpayer": null,
     "target_entity": "PropCo",
     "acquirer_groups": [],
     "graph": {
@@ -285,9 +278,8 @@
     "id": "tc_010",
     "description": "Two acquirers, A1 holds 80% directly, Z 1 triggered by A1 alone",
     "kind": "multi_acquirer",
-    "legal_rationale": "A1 holds 80% direct >= 75% -> Z 1 (per-acquirer reading); A2's 10% is irrelevant.",
+    "legal_rationale": "A1 holds 80% united in one hand >= 75% -> Z 2 (Vereinigung); A2's 10% is irrelevant.",
     "expected_triggered": true,
-    "expected_taxpayer": "A1",
     "target_entity": "PropCo",
     "acquirer_groups": [],
     "graph": {
@@ -328,7 +320,6 @@
     "kind": "z2_mixed",
     "legal_rationale": "Z 2 lit b sublit aa: 74% direct + 10% indirect = 84% united in one hand (convention Q6: direct and indirect stakes add up); direct stake alone (74%) misses Z 1.",
     "expected_triggered": true,
-    "expected_taxpayer": "A",
     "target_entity": "PropCo",
     "acquirer_groups": [],
     "graph": {
@@ -374,7 +365,6 @@
     "kind": "z2_summed_paths",
     "legal_rationale": "100x50 + 100x30 = 80% >= 75% -> Z 2 lit b.",
     "expected_triggered": true,
-    "expected_taxpayer": "A",
     "target_entity": "PropCo",
     "acquirer_groups": [],
     "graph": {
@@ -430,7 +420,6 @@
     "kind": "z2_chain",
     "legal_rationale": "Z 2 lit b + Schlussteil S1 over four levels: product 80% >= 75%.",
     "expected_triggered": true,
-    "expected_taxpayer": "A",
     "target_entity": "PropCo",
     "acquirer_groups": [],
     "graph": {
@@ -491,7 +480,6 @@
     "kind": "group_direct",
     "legal_rationale": "Z 2 + Z 4: no individual >= 75%, group members' stakes are summed: 40+40 = 80% >= 75% -> group liable ('sofern dies nicht gegeben ist, in der Hand einer Erwerbergruppe').",
     "expected_triggered": true,
-    "expected_taxpayer": "G1",
     "target_entity": "PropCo",
     "acquirer_groups": [
       {
@@ -540,7 +528,6 @@
     "kind": "group_direct",
     "legal_rationale": "Group sums to 60%, outsider holds 20%: nothing reaches 75%.",
     "expected_triggered": false,
-    "expected_taxpayer": null,
     "target_entity": "PropCo",
     "acquirer_groups": [
       {
@@ -599,7 +586,6 @@
     "kind": "group_mixed",
     "legal_rationale": "Group with an indirect member stake: 100x40 (A1, S1) + 40 (A2 direct) = 80% -> group liable under Z 2 + Z 4.",
     "expected_triggered": true,
-    "expected_taxpayer": "G1",
     "target_entity": "PropCo",
     "acquirer_groups": [
       {
@@ -658,7 +644,6 @@
     "kind": "precedence",
     "legal_rationale": "A1 alone unites 80% (indirectly) -> the individual check precedes the group check (Z 2: '... eines Erwerbers oder, sofern dies nicht gegeben ist, ... Erwerbergruppe').",
     "expected_triggered": true,
-    "expected_taxpayer": "A1",
     "target_entity": "PropCo",
     "acquirer_groups": [
       {
@@ -717,7 +702,6 @@
     "kind": "group_direct",
     "legal_rationale": "Group sum exactly 75% ('mindestens 75%' inclusive) -> Z 2 triggered by the group.",
     "expected_triggered": true,
-    "expected_taxpayer": "G1",
     "target_entity": "PropCo",
     "acquirer_groups": [
       {
@@ -766,7 +750,6 @@
     "kind": "group_direct",
     "legal_rationale": "Two groups at 60% and 40%: neither reaches 75%, no trigger.",
     "expected_triggered": false,
-    "expected_taxpayer": null,
     "target_entity": "PropCo",
     "acquirer_groups": [
       {
@@ -842,7 +825,6 @@
     "kind": "group_mixed",
     "legal_rationale": "Member-level mixed stakes: A1 25% direct + 100x20 indirect, A2 30% direct; group total exactly 75% -> triggered.",
     "expected_triggered": true,
-    "expected_taxpayer": "G1",
     "target_entity": "PropCo",
     "acquirer_groups": [
       {
@@ -902,11 +884,10 @@
   },
   {
     "id": "tc_028",
-    "description": "Direct acquisition of 100%, sole shareholder, should trigger (Z 1)",
-    "kind": "z1_direct",
-    "legal_rationale": "Z 1: 100% of all shares pass directly to one new shareholder, >= 75%.",
+    "description": "Direct acquisition of 100%, sole shareholder, should trigger (Z 2)",
+    "kind": "z2_direct",
+    "legal_rationale": "Z 2: 100% united directly in one hand, >= 75%.",
     "expected_triggered": true,
-    "expected_taxpayer": "A",
     "target_entity": "PropCo",
     "acquirer_groups": [],
     "graph": {
@@ -934,15 +915,14 @@
   {
     "id": "tc_030",
     "description": "Relabeled copy of tc_003: direct acquisition of exactly 75% with renamed entities, must trigger identically",
-    "kind": "z1_direct",
-    "legal_rationale": "Z 1: exactly 75% direct ('mindestens' inclusive). Outcome must be invariant under renaming of entity identifiers - the statute attaches consequences to share quotas, not names.",
+    "kind": "z2_direct",
+    "legal_rationale": "Z 2: exactly 75% in one hand ('mindestens' inclusive). Outcome must be invariant under renaming of entity identifiers - the statute attaches consequences to share quotas, not names.",
     "metamorphic_relation": {
       "relation": "relabeling",
       "base_case": "tc_003",
       "invariant": "renaming node ids/names must not change the outcome"
     },
     "expected_triggered": true,
-    "expected_taxpayer": "X",
     "target_entity": "P9",
     "acquirer_groups": [],
     "graph": {
@@ -970,15 +950,14 @@
   {
     "id": "tc_031",
     "description": "Copy of tc_001 plus an additional 0% edge from a second acquirer; the 0% edge must be a no-op",
-    "kind": "z1_direct",
-    "legal_rationale": "Z 1: A's 80% direct triggers exactly as in tc_001; B's 0% edge conveys no share in the Gesellschaftsvermoegen and is legally void of effect.",
+    "kind": "z2_direct",
+    "legal_rationale": "Z 2: A's 80% in one hand triggers exactly as in tc_001; B's 0% edge conveys no share in the Gesellschaftsvermoegen and is legally void of effect.",
     "metamorphic_relation": {
       "relation": "zero_edge",
       "base_case": "tc_001",
       "invariant": "adding a 0%-edge must not change the outcome"
     },
     "expected_triggered": true,
-    "expected_taxpayer": "A",
     "target_entity": "PropCo",
     "acquirer_groups": [],
     "graph": {
@@ -1019,7 +998,6 @@
     "kind": "z2_chain",
     "legal_rationale": "Z 2 lit b + Schlussteil S1 across five levels: product exactly 75%, 'mindestens' inclusive.",
     "expected_triggered": true,
-    "expected_taxpayer": "A",
     "target_entity": "PropCo",
     "acquirer_groups": [],
     "graph": {
@@ -1095,7 +1073,6 @@
       "invariant": "scaling the terminal stake below 75% must flip the outcome to not-triggered"
     },
     "expected_triggered": false,
-    "expected_taxpayer": null,
     "target_entity": "PropCo",
     "acquirer_groups": [],
     "graph": {
@@ -1151,7 +1128,6 @@
       "invariant": "adding a 0%-edge must not change the outcome"
     },
     "expected_triggered": true,
-    "expected_taxpayer": "A",
     "target_entity": "PropCo",
     "acquirer_groups": [],
     "graph": {
@@ -1197,7 +1173,6 @@
     "kind": "z2_summed_paths",
     "legal_rationale": "Z 2 lit b: three fully-owned holdings hold 37.5/25/12.5 of PropCo; summed indirect stake exactly 75% (S1 + path additivity, Q6), 'mindestens' inclusive.",
     "expected_triggered": true,
-    "expected_taxpayer": "A",
     "target_entity": "PropCo",
     "acquirer_groups": [],
     "graph": {
@@ -1268,7 +1243,6 @@
     "kind": "z2_summed_paths",
     "legal_rationale": "Summed indirect stake 74.99% < 75% (lower boundary probe for path summation).",
     "expected_triggered": false,
-    "expected_taxpayer": null,
     "target_entity": "PropCo",
     "acquirer_groups": [],
     "graph": {
@@ -1329,7 +1303,6 @@
       "invariant": "renaming node ids/names must not change the outcome"
     },
     "expected_triggered": true,
-    "expected_taxpayer": "K",
     "target_entity": "TargetCo",
     "acquirer_groups": [],
     "graph": {
@@ -1385,7 +1358,6 @@
     "kind": "z2_mixed",
     "legal_rationale": "Z 2 lit b sublit aa: direct (50%) and indirect (25%) stakes of the same acquirer are united in one hand (Q6); total exactly 75%, inclusive threshold.",
     "expected_triggered": true,
-    "expected_taxpayer": "A",
     "target_entity": "PropCo",
     "acquirer_groups": [],
     "graph": {
@@ -1436,7 +1408,6 @@
       "invariant": "scaling all terminal stakes below 75% total must flip the outcome"
     },
     "expected_triggered": false,
-    "expected_taxpayer": null,
     "target_entity": "PropCo",
     "acquirer_groups": [],
     "graph": {
@@ -1480,9 +1451,8 @@
     "id": "tc_046",
     "description": "Two acquirers 74%/26%, no group: neither reaches 75%, should not trigger",
     "kind": "multi_acquirer",
-    "legal_rationale": "Largest individual stake 74% < 75%; no group defined -> no trigger (boundary probe; cf. Q1 on the unmodeled aggregate Z 1 reading).",
+    "legal_rationale": "Largest single hand 74% < 75%; no group defined and no Z 1 flags -> no trigger (boundary probe).",
     "expected_triggered": false,
-    "expected_taxpayer": null,
     "target_entity": "PropCo",
     "acquirer_groups": [],
     "graph": {
@@ -1523,7 +1493,6 @@
     "kind": "group_direct",
     "legal_rationale": "Z 4 S 2: the person exercising the einheitliche Leitung belongs to the Erwerbergruppe, so P's own 12.5% counts toward the group total: 37.5+25+12.5 = exactly 75% (convention Q8).",
     "expected_triggered": true,
-    "expected_taxpayer": "G1",
     "target_entity": "PropCo",
     "acquirer_groups": [
       {
@@ -1588,7 +1557,6 @@
       "invariant": "renaming ids/group ids and reordering members must not change the outcome"
     },
     "expected_triggered": true,
-    "expected_taxpayer": "GX",
     "target_entity": "PropCo",
     "acquirer_groups": [
       {
@@ -1637,7 +1605,6 @@
     "kind": "group_direct",
     "legal_rationale": "Group sum 74% < 75%; the outsider's 26% must not be attributed to the group (Z 4: only members under the einheitliche Leitung count).",
     "expected_triggered": false,
-    "expected_taxpayer": null,
     "target_entity": "PropCo",
     "acquirer_groups": [
       {
@@ -1696,7 +1663,6 @@
     "kind": "group_mixed",
     "legal_rationale": "Member stakes per S1 (A1: 45% via two levels; A2: 35%) sum to 80% >= 75% -> group liable.",
     "expected_triggered": true,
-    "expected_taxpayer": "G1",
     "target_entity": "PropCo",
     "acquirer_groups": [
       {
@@ -1780,7 +1746,6 @@
       "invariant": "scaling all terminal stakes below 75% total must flip the outcome"
     },
     "expected_triggered": false,
-    "expected_taxpayer": null,
     "target_entity": "PropCo",
     "acquirer_groups": [
       {
@@ -1844,7 +1809,6 @@
       "invariant": "adding a 0%-path must not change the outcome"
     },
     "expected_triggered": true,
-    "expected_taxpayer": "G1",
     "target_entity": "PropCo",
     "acquirer_groups": [
       {
@@ -1906,9 +1870,8 @@
     "id": "tc_056",
     "description": "Acquirer chain: A1 owns 100% of A2 (also an acquirer); A2 holds 80% of PropCo directly. Direct acquisition (A2) precedes indirect (A1): taxpayer A2",
     "kind": "precedence",
-    "legal_rationale": "Schlussteil S2: 'Erfuellt derselbe Vorgang die Voraussetzungen fuer einen unmittelbaren und mittelbaren Erwerbsvorgang, geht der unmittelbare Erwerbsvorgang vor.' A2's direct 80% precedes A1's indirect 80% (100x80, S1). Reading to be confirmed by law professor (Q3/Q4).",
+    "legal_rationale": "Z 2: 80% unite in one hand, so GrESt is triggered. Under the Ob-only contract the Schlussteil S2 precedence (unmittelbar vor mittelbar: A2's direct 80% vs A1's indirect 100x80) is irrelevant -- it would only resolve the wer (out of scope, cf. § 9 GrEStG).",
     "expected_triggered": true,
-    "expected_taxpayer": "A2",
     "target_entity": "PropCo",
     "acquirer_groups": [],
     "graph": {
@@ -1949,7 +1912,6 @@
     "kind": "precedence",
     "legal_rationale": "Z 1 at the inclusive threshold; group membership does not displace the individual trigger (Z 2 group check is subsidiary: 'sofern dies nicht gegeben ist').",
     "expected_triggered": true,
-    "expected_taxpayer": "A1",
     "target_entity": "PropCo",
     "acquirer_groups": [
       {
@@ -1998,7 +1960,6 @@
     "kind": "precedence",
     "legal_rationale": "Z 2: the group is examined only because no single acquirer qualifies ('sofern dies nicht gegeben ist'); 50+30 = 80% >= 75% -> group liable.",
     "expected_triggered": true,
-    "expected_taxpayer": "G1",
     "target_entity": "PropCo",
     "acquirer_groups": [
       {
@@ -2043,11 +2004,10 @@
   },
   {
     "id": "tc_060",
-    "description": "A holds exactly 75% directly plus 10% indirectly (85% total): direct stake alone satisfies Z 1, taxpayer A",
+    "description": "A holds exactly 75% directly plus 10% indirectly (85% total): >= 75% unite in one hand, Z 2 triggered",
     "kind": "precedence",
-    "legal_rationale": "Z 1 met by the direct 75% alone; per Schlussteil S2 the direct acquisition takes precedence, the additional indirect 10% (S1) does not change the liable party.",
+    "legal_rationale": "Z 2: A's effective stake 75 + 10 = 85% unites >= 75% in one hand. Under the Ob-only contract the Schlussteil S2 direct-precedence (which Erwerbsvorgang) is irrelevant.",
     "expected_triggered": true,
-    "expected_taxpayer": "A",
     "target_entity": "PropCo",
     "acquirer_groups": [],
     "graph": {
@@ -2083,6 +2043,432 @@
           "from": "H",
           "to": "PropCo",
           "percentage": 10.0
+        }
+      ]
+    }
+  },
+  {
+    "id": "tc_061",
+    "description": "Two new shareholders acquire 40% + 40% directly within 7 years: aggregate 80% Gesellschafterwechsel, Z 1 triggered",
+    "kind": "z1_gesellschafterwechsel",
+    "legal_rationale": "Z 1: 40 + 40 = 80% of shares pass to new shareholders within seven years (>= 75%), aggregated over both -- not per acquirer. Z 2 does not apply (no single hand >= 75%, no Erwerbergruppe). Intentional aggregate-Z 1 counterpart of tc_009 (same graph, no flags).",
+    "expected_triggered": true,
+    "target_entity": "PropCo",
+    "acquirer_groups": [],
+    "graph": {
+      "nodes": [
+        {
+          "id": "A1",
+          "name": "Alpha GmbH",
+          "type": "acquirer"
+        },
+        {
+          "id": "A2",
+          "name": "Beta GmbH",
+          "type": "acquirer"
+        },
+        {
+          "id": "PropCo",
+          "name": "PropCo GmbH",
+          "type": "propco"
+        }
+      ],
+      "edges": [
+        {
+          "from": "A1",
+          "to": "PropCo",
+          "percentage": 40.0,
+          "new_shareholder": true,
+          "within_7y": true
+        },
+        {
+          "from": "A2",
+          "to": "PropCo",
+          "percentage": 40.0,
+          "new_shareholder": true,
+          "within_7y": true
+        }
+      ]
+    }
+  },
+  {
+    "id": "tc_062",
+    "description": "Two new shareholders 50% + 25% = exactly 75% within 7 years, Z 1 triggered",
+    "kind": "z1_gesellschafterwechsel",
+    "legal_rationale": "Z 1: exactly 75% to new shareholders within the window ('mindestens 75%' inclusive).",
+    "expected_triggered": true,
+    "target_entity": "PropCo",
+    "acquirer_groups": [],
+    "graph": {
+      "nodes": [
+        {
+          "id": "A1",
+          "name": "Alpha GmbH",
+          "type": "acquirer"
+        },
+        {
+          "id": "A2",
+          "name": "Beta GmbH",
+          "type": "acquirer"
+        },
+        {
+          "id": "PropCo",
+          "name": "PropCo GmbH",
+          "type": "propco"
+        }
+      ],
+      "edges": [
+        {
+          "from": "A1",
+          "to": "PropCo",
+          "percentage": 50.0,
+          "new_shareholder": true,
+          "within_7y": true
+        },
+        {
+          "from": "A2",
+          "to": "PropCo",
+          "percentage": 25.0,
+          "new_shareholder": true,
+          "within_7y": true
+        }
+      ]
+    }
+  },
+  {
+    "id": "tc_064",
+    "description": "New shareholders 50% (within 7y) + 30% (outside 7y): only 50% inside the window, no trigger",
+    "kind": "z1_gesellschafterwechsel",
+    "legal_rationale": "Z 1: the 30% transfer falls outside the seven-year window and is excluded; only 50% < 75% remains. Tests the 7-year boundary as a relevance filter.",
+    "expected_triggered": false,
+    "target_entity": "PropCo",
+    "acquirer_groups": [],
+    "graph": {
+      "nodes": [
+        {
+          "id": "A1",
+          "name": "Alpha GmbH",
+          "type": "acquirer"
+        },
+        {
+          "id": "A2",
+          "name": "Beta GmbH",
+          "type": "acquirer"
+        },
+        {
+          "id": "PropCo",
+          "name": "PropCo GmbH",
+          "type": "propco"
+        }
+      ],
+      "edges": [
+        {
+          "from": "A1",
+          "to": "PropCo",
+          "percentage": 50.0,
+          "new_shareholder": true,
+          "within_7y": true
+        },
+        {
+          "from": "A2",
+          "to": "PropCo",
+          "percentage": 30.0,
+          "new_shareholder": true,
+          "within_7y": false
+        }
+      ]
+    }
+  },
+  {
+    "id": "tc_065",
+    "description": "Within 7y: 40% to a new shareholder + 40% to an existing shareholder: only 40% is a Gesellschafterwechsel, no trigger",
+    "kind": "z1_gesellschafterwechsel",
+    "legal_rationale": "Z 1: only transfers to NEW shareholders count; the 40% acquired by an existing shareholder is excluded -> 40% < 75%. Z 2 also absent (no single hand >= 75%). Tests the new-shareholder gate.",
+    "expected_triggered": false,
+    "target_entity": "PropCo",
+    "acquirer_groups": [],
+    "graph": {
+      "nodes": [
+        {
+          "id": "A1",
+          "name": "Alpha GmbH",
+          "type": "acquirer"
+        },
+        {
+          "id": "A2",
+          "name": "Beta GmbH",
+          "type": "acquirer"
+        },
+        {
+          "id": "PropCo",
+          "name": "PropCo GmbH",
+          "type": "propco"
+        }
+      ],
+      "edges": [
+        {
+          "from": "A1",
+          "to": "PropCo",
+          "percentage": 40.0,
+          "new_shareholder": true,
+          "within_7y": true
+        },
+        {
+          "from": "A2",
+          "to": "PropCo",
+          "percentage": 40.0,
+          "new_shareholder": false,
+          "within_7y": true
+        }
+      ]
+    }
+  },
+  {
+    "id": "tc_066",
+    "description": "Three new shareholders 25% + 25% + 25% = exactly 75% within 7 years, Z 1 triggered",
+    "kind": "z1_gesellschafterwechsel",
+    "legal_rationale": "Z 1: three new shareholders' direct transfers sum to exactly 75% within the window; aggregated Gesellschafterwechsel, no group needed.",
+    "expected_triggered": true,
+    "target_entity": "PropCo",
+    "acquirer_groups": [],
+    "graph": {
+      "nodes": [
+        {
+          "id": "A1",
+          "name": "Alpha GmbH",
+          "type": "acquirer"
+        },
+        {
+          "id": "A2",
+          "name": "Beta GmbH",
+          "type": "acquirer"
+        },
+        {
+          "id": "A3",
+          "name": "Gamma GmbH",
+          "type": "acquirer"
+        },
+        {
+          "id": "PropCo",
+          "name": "PropCo GmbH",
+          "type": "propco"
+        }
+      ],
+      "edges": [
+        {
+          "from": "A1",
+          "to": "PropCo",
+          "percentage": 25.0,
+          "new_shareholder": true,
+          "within_7y": true
+        },
+        {
+          "from": "A2",
+          "to": "PropCo",
+          "percentage": 25.0,
+          "new_shareholder": true,
+          "within_7y": true
+        },
+        {
+          "from": "A3",
+          "to": "PropCo",
+          "percentage": 25.0,
+          "new_shareholder": true,
+          "within_7y": true
+        }
+      ]
+    }
+  },
+  {
+    "id": "tc_068",
+    "description": "Window-shift of tc_061: one of the two 40% transfers now falls outside 7 years, in-window aggregate drops to 40%, no trigger",
+    "kind": "z1_gesellschafterwechsel",
+    "legal_rationale": "Metamorphic (window shift): moving one contributing transfer of tc_061 out of the seven-year window lowers the in-window aggregate below 75%, flipping the outcome to not-triggered.",
+    "metamorphic_relation": {
+      "relation": "window_shift",
+      "base_case": "tc_061",
+      "invariant": "moving a contributing transfer outside the 7-year window must flip a borderline aggregate to not-triggered"
+    },
+    "expected_triggered": false,
+    "target_entity": "PropCo",
+    "acquirer_groups": [],
+    "graph": {
+      "nodes": [
+        {
+          "id": "A1",
+          "name": "Alpha GmbH",
+          "type": "acquirer"
+        },
+        {
+          "id": "A2",
+          "name": "Beta GmbH",
+          "type": "acquirer"
+        },
+        {
+          "id": "PropCo",
+          "name": "PropCo GmbH",
+          "type": "propco"
+        }
+      ],
+      "edges": [
+        {
+          "from": "A1",
+          "to": "PropCo",
+          "percentage": 40.0,
+          "new_shareholder": true,
+          "within_7y": true
+        },
+        {
+          "from": "A2",
+          "to": "PropCo",
+          "percentage": 40.0,
+          "new_shareholder": true,
+          "within_7y": false
+        }
+      ]
+    }
+  },
+  {
+    "id": "tc_069",
+    "description": "Relabeled copy of tc_062: 50% + 25% new shareholders within 7y with renamed entities, must trigger identically",
+    "kind": "z1_gesellschafterwechsel",
+    "legal_rationale": "Z 1: 50 + 25 = 75% to new shareholders within the window as in tc_062; renaming entities must not change the outcome.",
+    "metamorphic_relation": {
+      "relation": "relabeling",
+      "base_case": "tc_062",
+      "invariant": "renaming node ids/names must not change the outcome"
+    },
+    "expected_triggered": true,
+    "target_entity": "Grund",
+    "acquirer_groups": [],
+    "graph": {
+      "nodes": [
+        {
+          "id": "N1",
+          "name": "Nova One GmbH",
+          "type": "acquirer"
+        },
+        {
+          "id": "N2",
+          "name": "Nova Two GmbH",
+          "type": "acquirer"
+        },
+        {
+          "id": "Grund",
+          "name": "Grund Liegenschaft GmbH",
+          "type": "propco"
+        }
+      ],
+      "edges": [
+        {
+          "from": "N1",
+          "to": "Grund",
+          "percentage": 50.0,
+          "new_shareholder": true,
+          "within_7y": true
+        },
+        {
+          "from": "N2",
+          "to": "Grund",
+          "percentage": 25.0,
+          "new_shareholder": true,
+          "within_7y": true
+        }
+      ]
+    }
+  },
+  {
+    "id": "tc_070",
+    "description": "Two new shareholders 40% + 40% direct (Z 1) plus an unrelated indirect holding path; the indirect path must not count toward Z 1",
+    "kind": "z1_gesellschafterwechsel",
+    "legal_rationale": "Z 1 is purely unmittelbar: only the direct transfers (40 + 40 = 80% >= 75%) count; the indirect H->PropCo 20% path is not a direct Gesellschafterwechsel and is ignored by Z 1.",
+    "expected_triggered": true,
+    "target_entity": "PropCo",
+    "acquirer_groups": [],
+    "graph": {
+      "nodes": [
+        {
+          "id": "A1",
+          "name": "Alpha GmbH",
+          "type": "acquirer"
+        },
+        {
+          "id": "A2",
+          "name": "Beta GmbH",
+          "type": "acquirer"
+        },
+        {
+          "id": "A3",
+          "name": "Gamma GmbH",
+          "type": "acquirer"
+        },
+        {
+          "id": "H",
+          "name": "Holding GmbH",
+          "type": "holding"
+        },
+        {
+          "id": "PropCo",
+          "name": "PropCo GmbH",
+          "type": "propco"
+        }
+      ],
+      "edges": [
+        {
+          "from": "A1",
+          "to": "PropCo",
+          "percentage": 40.0,
+          "new_shareholder": true,
+          "within_7y": true
+        },
+        {
+          "from": "A2",
+          "to": "PropCo",
+          "percentage": 40.0,
+          "new_shareholder": true,
+          "within_7y": true
+        },
+        {
+          "from": "A3",
+          "to": "H",
+          "percentage": 100.0
+        },
+        {
+          "from": "H",
+          "to": "PropCo",
+          "percentage": 20.0
+        }
+      ]
+    }
+  },
+  {
+    "id": "tc_071",
+    "description": "A single new shareholder acquires 80% directly within 7 years: Z 1 (Gesellschafterwechsel) and Z 2 both apply",
+    "kind": "z1_gesellschafterwechsel",
+    "legal_rationale": "Z 1: 80% to a new shareholder within the window (>= 75%). The same 80% also unites in one hand, so Z 2 would apply too; for the Ob-only contract either suffices.",
+    "expected_triggered": true,
+    "target_entity": "PropCo",
+    "acquirer_groups": [],
+    "graph": {
+      "nodes": [
+        {
+          "id": "A1",
+          "name": "Alpha GmbH",
+          "type": "acquirer"
+        },
+        {
+          "id": "PropCo",
+          "name": "PropCo GmbH",
+          "type": "propco"
+        }
+      ],
+      "edges": [
+        {
+          "from": "A1",
+          "to": "PropCo",
+          "percentage": 80.0,
+          "new_shareholder": true,
+          "within_7y": true
         }
       ]
     }
